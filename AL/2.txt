@@ -1,0 +1,170 @@
+
+using System;
+class HelloWorld {
+  static void Main() {
+      
+    int n = Convert.ToInt32(Console.ReadLine());
+    int[]a = new int[n];
+    
+    bool Ans = true;
+    
+    for(int i = 0;i<n;i++)
+    {
+        a[i] = Convert.ToInt32(Console.ReadLine());
+    }
+    
+    for(int i = 0;i<n;i++)
+    {
+        if(a[i]%(i+1) != 0)
+        {
+            Ans = false;
+            Console.WriteLine("NO");
+            break;
+        }
+    }
+    
+    if(Ans == true) Console.WriteLine("YES");
+    
+    
+  }
+}
+
+
+using System;
+class HelloWorld {
+  static void Main() {
+      
+    int n = Convert.ToInt32(Console.ReadLine());
+    int[]a = new int[n];
+    
+    bool Ans = true;
+    
+    for(int i = 0;i<n;i++)
+    {
+        a[i] = Convert.ToInt32(Console.ReadLine());
+    }
+    
+    for(int i = 0;i<n;i++)
+    {
+        if(a[i]%2 == 0)
+        {
+            Ans = false;
+            Console.WriteLine("FIRST EVEN - "+(i+1));
+            break;
+        }
+    }
+    
+    if(Ans == true) Console.WriteLine("NO EVEN");
+    
+    
+  }
+}
+
+
+using System;
+class HelloWorld {
+  static void Main() {
+      
+    int n = Convert.ToInt32(Console.ReadLine());
+    int[]a = new int[n];
+    
+    bool Ans = true;
+    
+    for(int i = 0;i<n;i++)
+    {
+        a[i] = Convert.ToInt32(Console.ReadLine());
+    }
+    
+    for(int i = n-1;i>=0;i--)
+    {
+        if(a[i] == 0)
+        {
+            Ans = false;
+            Console.WriteLine("LAST ZERO - "+(i+1));
+            break;
+        }
+    }
+    
+    if(Ans == true) Console.WriteLine("NO ZERO");
+    
+    
+  }
+}
+
+
+
+using System;
+class HelloWorld {
+  static void Main() {
+      
+    int n = Convert.ToInt32(Console.ReadLine());
+    int minN = int.MaxValue, count = 0;
+    int[]a = new int[n];
+    
+    for(int i = 0;i<n;i++)
+    {
+        a[i] = Convert.ToInt32(Console.ReadLine());
+        if(a[i]<minN) minN = a[i];
+    }
+    
+    for(int i = n-1;i>=0;i--)
+    {
+        if(a[i]%minN == 0) count++;
+    }
+    
+    Console.WriteLine("ANS is "+count);
+    
+    
+  }
+}
+
+
+using System;
+class HelloWorld {
+  static void Main() {
+      
+    int n = Convert.ToInt32(Console.ReadLine());
+    int minN = int.MaxValue, maxN = int.MinValue;
+    int miN = 0, maN = 0;
+    int[]a = new int[n];
+    
+    for(int i = 0;i<n;i++)
+    {
+        a[i] = Convert.ToInt32(Console.ReadLine());
+        
+        if(a[i]<minN) 
+        {
+            minN = a[i];
+            miN = i;
+        }    
+        if(a[i]<maxN) 
+        {
+            maxN = a[i];
+            maN = i;
+        }
+    }
+    if(Math.Abs(maN-miN)==0) Console.WriteLine("No massiv");
+    else
+    {
+        int buf;
+        bool flag = true;
+        
+        if(maN<miN)
+        {
+            buf = maN;
+            maN = miN;
+            miN = buf;
+        }
+        
+        buf = int.MaxValue;
+        
+        for(int i = miN+1;i<maN;i++)
+        {
+            if (buf - a[i]<0) flag = false;
+            buf = a[i];
+        }
+        if(flag == true)Console.WriteLine("YES");
+        else Console.WriteLine("NO");
+    }
+  }
+}
