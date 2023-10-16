@@ -1,0 +1,57 @@
+using System;
+class HelloWorld {
+  static void Main() {
+    int n = Convert.ToInt32(Console.ReadLine()), c11 = int.MaxValue, c1 = int.MaxValue, c2 = int.MaxValue, c22 = int.MaxValue, s = 0;
+    bool b1 = false, b2 = false, fin = false;
+    for (int i = 0;i<n;i++)
+    {
+        int a = Convert.ToInt32(Console.ReadLine()),b = Convert.ToInt32(Console.ReadLine());
+        if (a > b)
+        { 
+            s += a;
+            
+        }
+        else s += b;
+        if (Math.Abs(a - b)%3 == 1)
+        { 
+            if (Math.Abs(a-b)<c1) c1 = Math.Abs(a-b);
+            else if ( Math.Abs(a-b)<c11) c11 = Math.Abs(a-b);
+            b1 = true;
+        }
+        
+        if (Math.Abs(a - b)%3 == 2 && Math.Abs(a-b)<c2)
+        {
+            if (Math.Abs(a-b)<c2) c2 = Math.Abs(a-b);
+            else if ( Math.Abs(a-b)<c22) c22 = Math.Abs(a-b);
+            b2 = true;
+        }
+        if (c11 != int.MaxValue && c11+c1 < c2) 
+        {
+            c2 = c11+c1;
+            b2 = true;
+        }
+        if (c22 != int.MaxValue && c22+c2 < c1) 
+        {
+            c1 = c22+c2;
+            b1 = true;
+        }
+    }
+    if (s%3 == 0) 
+    {
+        Console.WriteLine(s);
+        fin = true;
+    }
+    if (s % 3 == 1 && b1 == true && fin == false)
+    {
+        Console.WriteLine(s-c1);
+        fin = true;
+    }
+    if (s % 3 == 2 && b2 == true && fin == false)
+    { 
+        Console.WriteLine(s-c2);
+        fin = true;
+    }
+    if (fin == false)Console.WriteLine("No");
+    
+  }
+}
