@@ -1,0 +1,99 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApplication5
+{
+    class Student
+    {
+        string name;
+        int year;
+        string group;
+
+        public Student(string name="", int year=0, string group="")
+        {
+            this.name = name;
+            this.year = year;
+            this.group = group;
+        }
+
+        public static string GetName(Student student)
+        {
+            return student.name;
+        }
+        public static int GetYear(Student student)
+        {
+            return student.year;
+        }
+        public static string GetGroup(Student student)
+        {
+            return student.group;
+        }
+        public static void ChangeName(Student student, string name)
+        {
+            student.name = name;
+            return;
+        }
+        public static void ChangeYear(Student student, int year)
+        {
+            student.year = year;
+            return;
+        }
+        public static void ChangeGroup(Student student, string group)
+        {
+            student.group = group;
+            return;
+        }
+        public static void ShowStudent(Student student)
+        {
+            Console.WriteLine(student.name + "  " + student.year + "  " + student.group);
+            return;
+        }
+
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+            Console.WriteLine("введите количество студентов");
+            Student[] People = new Student[Convert.ToInt32(Console.ReadLine())];
+
+            foreach(Student i in People)
+            {
+                Console.WriteLine("введите фио");
+                Student.ChangeName(i,Console.ReadLine());
+                Console.WriteLine("введите год рождения");
+                Student.ChangeYear(i,Convert.ToInt32(Console.ReadLine()));
+                Console.WriteLine("введите группу");
+                Student.ChangeGroup(i,Console.ReadLine());
+                
+            }
+
+            Console.WriteLine("Выборка по году рождения");
+            int N = Convert.ToInt32(Console.ReadLine());
+            foreach (Student i in People)
+            {
+                if (Student.GetYear(i) == N)
+                {
+                    Student.ShowStudent(i);
+                }
+            }
+            Console.WriteLine();
+            Console.WriteLine("Выборка по группе");
+            string S = Console.ReadLine();
+            foreach (Student i in People)
+            {
+                if (Student.GetGroup(i) == S)
+                {
+                    Student.ShowStudent(i);
+                }
+            }
+            Console.WriteLine();
+
+            Console.Read();
+        }
+    }
+}
