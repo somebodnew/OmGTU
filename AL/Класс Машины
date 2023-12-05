@@ -1,0 +1,109 @@
+using System;
+
+namespace ConsoleApplication3
+{
+    class Cars
+    {
+        string name, colour;
+        int year;
+        int[] tech;
+        string[] owners;
+        public Cars(string mname, string mcolour, int myear, string[] mowners, int[] mtech)
+        {
+            this.name = mname;
+            this.colour = mcolour;
+            this.year = myear;
+            this.owners = mowners;
+            this.tech = mtech;
+        }
+        public static bool CheckCarYear(int tyear, Cars car)
+        {
+            bool ans = false;
+            if (tyear == car.year) ans = true;
+            return ans;
+        }
+
+        public static bool CheckCarTech(int tyear, Cars car)
+        {
+            bool ans = false;
+            for (int i = 0; i < car.tech.Length; i++)
+            {
+                if (tyear == car.tech[i]) ans = true;
+            }
+                return ans;
+        }
+
+        public static string LastOwner(Cars car)
+        {
+            return car.owners[car.owners.Length - 1];
+        }
+
+        public static void ShowAll(Cars car)
+        {
+            Console.WriteLine(car.name + "  " + car.colour + "   " + car.year);
+            foreach (string i in car.owners)
+                Console.WriteLine(i);
+            Console.WriteLine("      ");
+            foreach (int i in car.tech)
+                Console.WriteLine(i);
+            Console.WriteLine("      ");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("количество машин");
+            Cars[] LotOfCars = new Cars[Convert.ToInt32(Console.ReadLine())];
+            Console.WriteLine();
+            for(int i = 0;i<LotOfCars.Length;i++)
+            {
+                Console.WriteLine("количество дат тех осмотра");
+                int[] dates = new int[Convert.ToInt32(Console.ReadLine())];
+                for (int j = 0; j < dates.Length; j++)
+                {
+                    Console.WriteLine("дата тех осмотра");
+                    dates[j] = Convert.ToInt32(Console.ReadLine());
+                }
+                Console.WriteLine("количество владельцев");
+                string[] owners = new string[Convert.ToInt32(Console.ReadLine())];
+                for (int j = 0; j < owners.Length; j++)
+                {
+                    Console.WriteLine("имя владельца");
+                    owners[j] = Console.ReadLine();
+                }
+                Console.WriteLine("название машины, цвет машины, год выпуска");
+                LotOfCars[i] = new Cars(Console.ReadLine(), Console.ReadLine(), Convert.ToInt32(Console.ReadLine()), owners, dates);
+                Console.WriteLine();
+            }
+            Console.WriteLine("Выборка по году выпуска");
+            int N = Convert.ToInt32(Console.ReadLine());
+            for (int i = 0; i < LotOfCars.Length; i++)
+            {
+                bool t = Cars.CheckCarYear(N,LotOfCars[i]);
+                if (t == true) Cars.ShowAll(LotOfCars[i]);
+                
+            }
+
+            Console.WriteLine("Выборка по году тех. осмотра");
+            N = Convert.ToInt32(Console.ReadLine());
+            for (int i = 0; i < LotOfCars.Length; i++)
+            {
+                bool t = Cars.CheckCarTech(N,LotOfCars[i]);
+                if (t == true) Cars.ShowAll(LotOfCars[i]);
+
+            }
+
+
+            Console.WriteLine("Выборка последних владельцев");
+            for (int i = 0; i < LotOfCars.Length; i++)
+            {
+                Console.WriteLine(Cars.LastOwner(LotOfCars[i]));
+            }
+
+            Console.WriteLine("the end");
+            N = Convert.ToInt32(Console.ReadLine());
+        }
+    }
+}
