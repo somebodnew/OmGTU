@@ -1,0 +1,123 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApplication5
+{
+    class Cars
+    {
+        public string ser,name;
+        public int year;
+        public int[] tech;
+
+        public Cars(string ser, string name, int year, int[] tech)
+        {
+            this.ser = ser;
+            this.name = name;
+            this.year = year;
+            this.tech = tech;
+        }
+    }
+
+    class Light : Cars
+    {
+        string form;
+        int power;
+        public Light(string form, int power, string ser, string name, int year, int[] tech)
+            : base(ser, name, year, tech)
+        {
+            this.form = form;
+            this.power = power;
+        }
+        public static string GetForm(Light car)
+        {
+            return car.form;
+        }
+        public static void Sh(Light car)
+        {
+            Console.WriteLine(car.form + "\n" + car.power + "\n" + car.ser + "\n" + car.name + "\n" + car.year + "\n");
+
+        }
+    }
+
+    class Heavy : Cars
+    {
+        int lift;
+        public Heavy(int lift, string ser, string name, int year, int[] tech) : base(ser, name, year, tech)
+        {
+            this.lift = lift;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("колво легковых машин");
+            Light[] LightCars = new Light[Convert.ToInt32(Console.ReadLine())];
+
+            for (int i = 0; i < LightCars.Length; i++)
+            {
+                Console.WriteLine("Колво дат тех");
+                int[] tech = new int[Convert.ToInt32(Console.ReadLine())];
+                for (int j = 0; j<tech.Length; j++)  tech[i] = Convert.ToInt32(Console.ReadLine());
+
+                Console.WriteLine("кузов серия имя");
+                string[] par = Console.ReadLine().Split();
+
+                Console.WriteLine("мощность");
+                int n = Convert.ToInt32(Console.ReadLine());
+
+                Console.WriteLine("год выпуска");
+                int y = Convert.ToInt32(Console.ReadLine());
+                
+                LightCars[i] = new Light(par[0],n,par[1],par[2],y,tech);
+            }
+
+            Console.WriteLine();
+
+            Console.WriteLine("колво грузовых машин");
+            Heavy[] HeavyCars = new Heavy[Convert.ToInt32(Console.ReadLine())];
+
+            for (int i = 0; i < HeavyCars.Length; i++)
+            {
+                Console.WriteLine("Колво дат тех");
+                int[] tech = new int[Convert.ToInt32(Console.ReadLine())];
+                for (int j = 0; j < tech.Length; j++) tech[i] = Convert.ToInt32(Console.ReadLine());
+
+                Console.WriteLine("серия имя");
+                string[] par = Console.ReadLine().Split();
+
+                Console.WriteLine("грузоподъемность");
+                int n = Convert.ToInt32(Console.ReadLine());
+
+                Console.WriteLine("год выпуска");
+                int y = Convert.ToInt32(Console.ReadLine());
+
+                HeavyCars[i] = new Heavy(n, par[0], par[1], y, tech);
+            }
+
+            Console.WriteLine("К1");
+            string w = Console.ReadLine();
+
+            for (int i = 0; i < LightCars.Length; i++ )
+            {
+                if (Light.GetForm(LightCars[i]) == w) Light.Sh(LightCars[i]);
+            }
+
+            Console.WriteLine("К1");
+            string w = Console.ReadLine();
+
+            for (int i = 0; i < LightCars.Length; i++)
+            {
+                if (Light.GetForm(LightCars[i]) == w) Light.Sh(LightCars[i]);
+            }
+
+            Console.WriteLine();
+            Console.Read();
+
+        }
+    }
+}
