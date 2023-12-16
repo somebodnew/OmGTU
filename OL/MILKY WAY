@@ -1,0 +1,42 @@
+
+using System;
+class HelloWorld {
+  static void Main() {
+    //Console.WriteLine("Hello World");
+    
+    int N = Convert.ToInt32(Console.ReadLine()),Nu = 0;
+    int[,] V = new int[N,2];
+    int[,] S = new int[N,2];
+    float[,] C = new float[N,2];
+    float[] A = new float[N];
+    float MI = Single.MaxValue;
+    
+    for (int i = 0; i<N; i++ )
+    {
+        for (int j = 0; j<2; j++)
+        {
+            int x = Convert.ToInt32(Console.ReadLine()),
+                y = Convert.ToInt32(Console.ReadLine()),
+                z = Convert.ToInt32(Console.ReadLine());
+            
+            V[i,j] = x*y*z;
+            S[i,j] = x*y+x*z+y*z;
+        }
+        C[i,0] = Convert.ToInt32(Console.ReadLine());
+        C[i,1] = Convert.ToInt32(Console.ReadLine());
+    
+    }
+    
+    for (int i = 0; i<N; i++ )
+    {
+        float UU = S[i,0]/S[i,1];
+        A[i] = (C[i,0]-C[i,1]*UU) / (V[i,0]-V[i,1]*UU);
+        if (A[i] < MI){
+            MI = A[i];
+            Nu = i+1;
+        } 
+    }
+    Console.WriteLine(Nu);
+    Console.WriteLine(MI);
+  }
+}
