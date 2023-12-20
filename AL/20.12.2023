@@ -1,0 +1,80 @@
+using System;
+
+namespace ConsoleApplication2
+{
+    class Tovar
+    {
+        public string meas, name;
+        public int cost;
+        public Tovar(string name, string meas, int cost)
+        {
+            this.name = name;
+            this.meas = meas;
+            this.cost = cost;
+        }
+    }
+    class Product : Tovar
+    {
+        int expDate, kcal, prot, fats, carb;
+        public Product(string name, int cost, string meas, int expDate, int kcal, int prot, int fats, int carb)
+            : base(name, meas, cost)
+        {
+            this.expDate = expDate;
+            this.kcal = kcal;
+            this.prot = prot;
+            this.fats = fats;
+            this.carb = carb;
+        }
+        public void Label(Product self)
+        {
+            Console.WriteLine(self.name+"\n"+
+                                "costs "+self.cost+" per "+self.meas+"\n"+
+                                "expires in "+self.expDate+" days"+"\n"+
+                                "it contains:"+"\n"+
+                                "--kcal: "+self.kcal+"\n"+
+                                "--proteins: "+self.prot+"\n"+
+                                "--fats: "+self.fats+"\n"+
+                                "--carbohydrates: " + self.carb);
+        }
+    }
+    class Material : Tovar
+    {
+        string mat;
+        public Material( string name, int cost, string meas,string mat)
+            : base(name, meas, cost)
+        {
+            this.mat = mat;
+        }
+        public void Label(Material self)
+        {
+            Console.WriteLine(self.name + "\n" +
+                                "costs " + self.cost + " per " + self.meas + "\n" +
+                                "made of "+self.mat);
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Product[] Groceries = new Product[Convert.ToInt32(Console.ReadLine())];
+            Material[] Construction = new Material[Convert.ToInt32(Console.ReadLine())];
+
+            for (int i = 0; i < Groceries.Length; i++)
+            {
+                Console.WriteLine("Введите по порядку имя, цену, единицы измерения");
+                Console.WriteLine("А также срок годности в днях, ккал, белки, жиры и углеводы");
+                Groceries[i] = new Product(Console.ReadLine(), Convert.ToInt32(Console.ReadLine()), Console.ReadLine(), Convert.ToInt32(Console.ReadLine()), Convert.ToInt32(Console.ReadLine()),
+                    Convert.ToInt32(Console.ReadLine()), Convert.ToInt32(Console.ReadLine()), Convert.ToInt32(Console.ReadLine()));
+
+            }
+            for (int i = 0; i < Construction.Length; i++)
+            {
+                Console.WriteLine("Введите по порядку имя, цену, единицы измерения");
+                Console.WriteLine("А также из чего стройматериал");
+                Construction[i] = new Material(Console.ReadLine(), Convert.ToInt32(Console.ReadLine()), Console.ReadLine(), Console.ReadLine());
+
+            }
+
+        }
+    }
+}
