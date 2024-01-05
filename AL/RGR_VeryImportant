@@ -1,0 +1,58 @@
+using System;
+class HelloWorld { 
+    
+    //Проверка результата угадывания и сообщение о результате(если не угадал)
+    static bool CheckAns(int ans,int playerAns){
+        if(playerAns == ans)return true;
+        if(playerAns > ans)Console.WriteLine($"Wrong! My Number is Lesser than {playerAns}");
+        if(playerAns < ans)Console.WriteLine($"Wrong! My Number is Greater than {playerAns}");
+        return false;
+    }
+    static int Mode(int s){
+        if(s == 0)return Int32.MaxValue;
+        return s;
+        
+    }
+    static void Main(){
+        Random rnd = new Random();
+        
+        //Выбор режима
+        //0 для "неограниченных" попыток
+        //другое натуральное число для выбора количества попыток
+        Console.WriteLine("Choose Mode!");
+        Console.WriteLine("0 for Unlimited Attempts!");
+        Console.WriteLine("Other Number For Limited Attempts!");
+        int setAttempt = Mode(Convert.ToInt32(Console.ReadLine()));
+        
+        //выбор максимального числа для выбора из "от 0 до N" чисел
+        Console.WriteLine("Choose Range!");
+        int N = Convert.ToInt32(Console.ReadLine());
+        int ans = rnd.Next(0,N);    //случайное число
+        bool gameOn = true,gameWon = false;
+        
+        Console.WriteLine("Try To Guess My Number!");
+        int attempts = 0;
+        while (gameOn && gameWon == false){
+            //угадывание числа, использование попытки
+            int playerAns = Convert.ToInt32(Console.ReadLine());
+            attempts++;
+            
+            //проверка ответа
+            gameWon = CheckAns(ans,playerAns);
+            
+            //выкидывает после неудачной финальной попытки
+            //или после 2,147,483,647 попыток, в этом случае игрок ужасен
+            if(attempts >= setAttempt)gameOn = false;
+        }
+        
+        // это возможно только в случае успешного CheckAns
+        if(gameWon){
+            Console.Write($"You Won In {attempts}");
+            if(setAttempt != Int32.MaxValue) Console.Write($" out of {setAttempt}");
+            Console.WriteLine(" attempts!");
+        }
+        // значит выход из цикла был вследствие использования всех попыток
+        else Console.WriteLine($"You Lost! My Number is {ans}!");
+      
+  }
+}
