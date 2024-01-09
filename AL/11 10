@@ -1,0 +1,81 @@
+
+using System;
+class HelloWorld {
+  static void Main() {
+    
+    int[] a = new int[Int32.Parse(Console.ReadLine())];
+    int ma = Int32.MinValue;
+    int mi = Int32.MaxValue;
+    
+    for(int i = 0;i<a.Length;i++){
+        a[i]=Int32.Parse(Console.ReadLine());
+        if(a[i]>ma)ma = i;
+        if(a[i]<mi)mi = i;
+    }
+    int n1,n2;
+    if(ma>mi){
+        n1=mi;
+        n2=ma;
+    }
+    else{
+        n1=ma;
+        n2=mi;
+    }
+    int ev = 0;
+    for(int i = n1+1;i<n2;i++){
+        if(Math.Abs(a[i])%2 == 0)ev++;
+    }
+    Console.WriteLine($"Ans is {ev}");
+  }
+}
+
+using System;
+class HelloWorld {
+  static void Main() {
+    
+    int[] a = new int[Int32.Parse(Console.ReadLine())];
+    int ma = Int32.MinValue;
+    int mi = Int32.MaxValue;
+    
+    for(int i = 0;i<a.Length;i++){
+        a[i]=Int32.Parse(Console.ReadLine());
+    }
+    bool Ans = true;
+    for(int i = 0;i<a.Length;i++){
+        if((i+1)%2==0){
+            if(Convert.ToString(Math.Abs(a[i])).Contains('5')==false){
+                Ans = false;
+                break;
+            }
+            
+        }
+    }
+    if(Ans == true)Console.WriteLine("YES");
+    else Console.WriteLine("NO");
+  }
+}    
+using System;
+class HelloWorld {
+    static int Summa(int a,int s = 0){
+        if(a>10)return Summa(a/10,s+a%10);
+        return s+a;
+    }
+  static void Main() {
+    
+    int[] a = new int[Int32.Parse(Console.ReadLine())];
+    
+    for(int i = 0;i<a.Length;i++){
+        a[i]=Int32.Parse(Console.ReadLine());
+    }
+    for(int i = 0;i<a.Length;i++){
+        if(a[i]%2==1){
+            a[i] = Summa(a[i]);
+        }  
+    }
+    for(int i = 0;i<a.Length;i++){
+        Console.WriteLine(a[i]);
+    }
+}
+}
+
+    
