@@ -1,0 +1,83 @@
+using System;
+
+namespace Hello121s1s1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("Введите значение для p: ");
+            int p = Convert.ToInt32(Console.ReadLine());
+            //int[] array = new int[] {6, 14};
+            
+            Console.Write("Введите количество городов: ");
+            int n = Convert.ToInt32(Console.ReadLine());
+            int[] array = new int[n - 1];
+            for(int i = 0; i < n - 1; i ++){
+                Console.Write($"Расстояние между городами номер {i+1} и {i+2}: ");
+                array[i] = Convert.ToInt32(Console.ReadLine());
+            }
+            
+            int[] towns = new int[array.Length + 1];
+
+            towns[0] = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                towns[i + 1] = towns[i] + array[i];
+            }
+
+
+            int position = -1, distance = -1;
+            for (int j = 0; j < towns.Length - 1; j++)
+            {
+                for (int i = towns[j] + p ; i <= towns[j+1] - p; i++)
+                {
+                    if (position == -1)
+                    {
+                        position = i;
+                        distance = 0;
+                        foreach (int t in towns)
+                        {
+                            distance += Math.Abs(i - t);
+                        }
+                    } 
+                    else 
+                    {
+                        int currentDistance = 0;
+                        foreach (int t in towns)
+                        {
+                            currentDistance += Math.Abs(i - t);
+                        }
+
+                        distance = Math.Min(distance, currentDistance);
+                        position = distance < currentDistance ? position : i;
+                    }
+
+
+                }
+
+            }
+
+            if (position == -1)
+            {
+                Console.WriteLine("Мест нет");
+            }
+            else
+            {
+                Console.WriteLine($"Минимальное расстояние от заправки до городов: {distance}");
+                
+            }
+
+            for (int i = towns.Length - 1; i >=0; i--)
+            {
+                if (position > towns[i])
+                {
+                    Console.WriteLine("Заправку можно поставить на " + (position - towns[i]) + " единиц правее города " + (i + 1));
+                    break;
+                }
+            }
+
+                Console.WriteLine("Карта: [{0}]", string.Join(", ", towns));
+        }
+    }
+}
