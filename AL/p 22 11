@@ -1,0 +1,116 @@
+int WhiteAmount, GrayAmount, RemainedWhiteAmount, RemainedGrayAmount, k, RemAmountOfMice, position, counter, pos_r;
+Random random = new Random();
+
+Console.WriteLine("начальное количество серых мышек:");
+GrayAmount = Convert.ToInt32(Console.ReadLine());
+
+Console.WriteLine("начальное количество белых мышек:");
+WhiteAmount = Convert.ToInt32(Console.ReadLine());
+
+Console.WriteLine("Введите каждую какую мышку съедать:");
+k = Convert.ToInt32(Console.ReadLine());
+
+Console.WriteLine("Введите количество серых мышек, которые должны остаться:");
+RemainedGrayAmount = Convert.ToInt32(Console.ReadLine());
+
+Console.WriteLine("Введите количество белых мышек, которые должны остаться:");
+RemainedWhiteAmount = Convert.ToInt32(Console.ReadLine());
+
+RemAmountOfMice = GrayAmount + WhiteAmount;
+
+int[] mice = new int[GrayAmount + WhiteAmount];
+
+for(int i = 0; i < mice.Length; i++)
+{
+    mice[i] = 0;
+}
+if (k <= GrayAmount + WhiteAmount)
+{
+    position = 1;
+    counter = mice.Length;
+
+    while (RemAmountOfMice > RemainedGrayAmount + RemainedWhiteAmount)
+    {
+        if (position > mice.Length) position = 1;
+        if (position % k == 0)
+        {
+            mice[position - 1] = 1;
+            RemAmountOfMice--;
+            position++;
+        }
+        else
+        {
+            if (mice[position - 1] == 0)
+            {
+                position++;
+            }
+        }
+    }
+
+    if (counter < RemainedGrayAmount + RemainedWhiteAmount)
+    {
+        Console.WriteLine("Невозможно рассадить");
+    }
+    else
+    {
+        counter = 0;
+        while (counter < RemainedGrayAmount)
+        {
+            pos_r = random.Next(0, mice.Length);
+            if (mice[pos_r] == 0)
+            {
+                mice[pos_r] = 3;
+                counter++;
+            }
+        }
+
+        counter = 0;
+        while (counter < GrayAmount - RemainedGrayAmount)
+        {
+            pos_r = random.Next(0, mice.Length);
+            if (mice[pos_r] == 1)
+            {
+                mice[pos_r] = 3;
+                counter++;
+            }
+        }
+
+        counter = 0;
+        while (counter < RemainedWhiteAmount)
+        {
+            pos_r = random.Next(0, mice.Length);
+            if (mice[pos_r] == 0)
+            {
+                mice[pos_r] = 2;
+                counter++;
+            }
+        }
+
+        counter = 0;
+        while (counter < WhiteAmount - RemainedWhiteAmount)
+        {
+            pos_r = random.Next(0, mice.Length);
+            if (mice[pos_r] == 1)
+            {
+                mice[pos_r] = 2;
+                counter++;
+            }
+        }
+
+        for (int i = 0; i < mice.Length; i++)
+        {
+            if (mice[i] == 3)
+            {
+                Console.Write("С");
+            }
+            if (mice[i] == 2)
+            {
+                Console.Write("Б");
+            }
+        }
+    }
+}
+else
+{
+    
+}
