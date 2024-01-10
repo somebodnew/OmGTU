@@ -10,8 +10,7 @@ class HelloWorld {
     }
     static int Mode(int s){
         if(s == 0)return Int32.MaxValue;
-        return s;
-        
+        return Math.Abs(s);
     }
     static void Main(){
         Random rnd = new Random();
