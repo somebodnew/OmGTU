@@ -1,0 +1,31 @@
+using System;
+
+//using System.Linq;
+public class Program
+{
+    public static void Main()
+    {
+        Console.Write("Число N: ");
+        int mice = Convert.ToInt32(Console.ReadLine());
+
+        Console.Write("Число k: ");
+        int k = Convert.ToInt32(Console.ReadLine());
+
+        int counter = 0, current = 0;
+        char[] a = new char[mice];
+        for(int i = 0; i < mice; i++) a[i] = '+';
+
+        while (counter < mice - 1){
+            for (int i = 0; i < mice; i++){
+                if(a[i] != '-') current++;
+                if(current == k && a[i] != '-'){
+                    a[i] = '-';
+                    counter++;
+                    current = 0;
+                }
+            }
+        } 
+        string b = new string(a);
+        if(b.Contains('+')) Console.WriteLine("Начинать с " + (Array.IndexOf(a, '+') + 1)+" мыши.");
+    }
+}
