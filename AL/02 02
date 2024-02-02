@@ -93,13 +93,13 @@ namespace ConsoleApplication9
 
         static public void CreateBased()
         {
-            int seats = Convert.ToInt32(Console.ReadLine()),comps = Convert.ToInt32(Console.ReadLine()), korpus = Convert.ToInt32(Console.ReadLine()), floor = Convert.ToInt32(Console.ReadLine()), nomer = = Convert.ToInt32(Console.ReadLine());
+            int seats = Convert.ToInt32(Console.ReadLine()),comps = Convert.ToInt32(Console.ReadLine()), korpus = Convert.ToInt32(Console.ReadLine()), floor = Convert.ToInt32(Console.ReadLine()), nomer = Convert.ToInt32(Console.ReadLine());
             bool proj = Convert.ToBoolean(Console.ReadLine());
             Based[0] = new AudiFond(seats,proj,comps,korpus,floor,nomer);
         }
         static public void AddAud()
         {
-            int seats = Convert.ToInt32(Console.ReadLine()),comps = Convert.ToInt32(Console.ReadLine()), korpus = Convert.ToInt32(Console.ReadLine()), floor = Convert.ToInt32(Console.ReadLine()), nomer = = Convert.ToInt32(Console.ReadLine());
+            int seats = Convert.ToInt32(Console.ReadLine()),comps = Convert.ToInt32(Console.ReadLine()), korpus = Convert.ToInt32(Console.ReadLine()), floor = Convert.ToInt32(Console.ReadLine()), nomer = Convert.ToInt32(Console.ReadLine());
             bool proj = Convert.ToBoolean(Console.ReadLine());
             Array.Resize(ref Based, Based.Length+1);
             Based[Based.Length-1] = new AudiFond(seats,proj,comps,korpus,floor,nomer);
@@ -146,7 +146,7 @@ namespace ConsoleApplication9
             Menu.CreateBased();
             while (Menu.On)
             {
-                Console.WriteLine("введите 1 для создания базы данных");
+                //Console.WriteLine("введите 1 для создания базы данных");
                 Console.WriteLine("введите 2 для дополнения базы данных");
                 Console.WriteLine("введите 3 для выборки по количеству мест");
                 Console.WriteLine("введите 4 для  выборки по количеству компьютеров");
