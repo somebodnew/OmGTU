@@ -1,0 +1,82 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+//будут классы, конструкторы методы
+//один класс, описывающий аудиторный фонд конститута
+//характеристики: количество посадочных мест, оснащённость проектором, оснащённость компами и корпус, этаж и номер кабинета
+//1. выбрать аудитории, которые имеют количество посадочных мест >= заданному
+//2. выбрать аудитории с наличием компьютеров в заданном количестве
+//3. выборка аудиториий с наличием компьютеров на заднном этаже
+//4. выборка аудиторий в заданном корпусе на заданном этаже с заданнм количеством посадочных мест
+//Должен быть реализован класс меню в котором необходимо реализовать вывод меню на экран
+//Пункты меню: создание базы аудиторного фонда, дополнение базы аудиторного фонда,несколько пунктов по выборке, 
+//пункт по изменению данных для заданной аудиториий, вывод всех данных, выход
+
+namespace ConsoleApplication20
+{
+    class Classroom 
+    {
+        public int CountOfSeats;
+        public bool IsHaveOfProjector;
+        public int CountOfComputer;
+        public bool IsHaveOfComputer
+        {
+            get { return CountOfComputer == 0; }
+        }
+        public int Building;
+        public int Level;
+        public int NumberOfCabinet;
+
+        public Classroom(
+                int CountOfSeats,
+                bool IsHaveOfProjector,
+                int CountOfComputer,
+                int Building,
+                int Level,
+                int NumberOfCabinet
+            )
+        {
+            this.CountOfSeats = CountOfSeats;
+            this.IsHaveOfProjector = IsHaveOfProjector;
+            this.CountOfComputer = CountOfComputer;
+            this.Building = Building;
+            this.Level = Level;
+            this.NumberOfCabinet = NumberOfCabinet;
+        }
+    }
+
+    class Storage
+    {
+        List<Classroom> storage = new List<Classroom>();
+        public void AddElem(Classroom element)
+        {
+            storage.Add(element);
+        }
+        public List<Classroom> FilterBySeats(int countOfSeats)
+        {
+            List<Classroom> res = new List<Classroom>();
+            foreach(Classroom elem in storage)
+            {
+                
+                if()
+            }
+        }
+        
+        
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Classroom cab1 = new Classroom(10, true, 100, 1,1,1);
+            Storage storage = new Storage();
+            storage.AddElem(cab1);
+            
+            
+        }
+    }
+}
