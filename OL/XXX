@@ -1,0 +1,46 @@
+
+
+
+disp = dict()
+spisok = list()
+i = 0
+
+st = input()
+while st!="END":
+    
+    if len(st)>4:
+        ga = st.split()
+    else:
+        ga = [st,"Unknown Man"]
+        
+    if ga[0] not in disp.keys():
+        disp[ga[0]] = ga[1]
+
+    if i%2 == 0:
+        k = ga[0]
+    else:
+        spisok.append((k,ga[0]))
+    
+    st = input()
+    i+=1
+
+boss = input()
+if boss not in disp.keys():
+    for i in disp.keys():
+        if disp[i] == boss:
+            boss = i
+            break
+        
+a = [boss]
+for i in a:
+    for j in spisok:
+        if i==j[0]:
+            a.append(j[1])
+a.remove(boss)
+if len(a) == 0:
+    print("NO")
+else:
+    a.sort()
+    for i in range(len(a)):
+        print(a[i],disp[a[i]])
+
