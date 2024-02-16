@@ -1,0 +1,141 @@
+using System;
+using System.Linq;
+using System.Collections;
+namespace ConsoleApplication13
+{
+    class Menu
+    {
+        static public bool On = true;
+        public static void Show()
+        {
+            Console.WriteLine("Введите 1, чтобы заполнить массив");
+            Console.WriteLine("Введите 2, чтобы использовать Count");
+            Console.WriteLine("Введите 3, чтобы использовать BinSearch");
+            Console.WriteLine("Введите 4, чтобы использовать Copy");
+            Console.WriteLine("Введите 5, чтобы использовать Find");
+            Console.WriteLine("Введите 6, чтобы использовать FindLast");
+            Console.WriteLine("Введите 7, чтобы использовать IndexOf");
+            Console.WriteLine("Введите 8, чтобы использовать Reverse");
+            Console.WriteLine("Введите 9, чтобы использовать Resize");
+            Console.WriteLine("Введите 10, чтобы использовать Sort");
+            Console.WriteLine("Введите 11, чтобы выйти");
+        }
+        public static void Option(int k)
+        {
+            var d = new Basa(0);
+            
+            switch (k)
+            {
+                case 1:
+                    Console.WriteLine("Введите количество элементов массива");
+                    d = new Basa(Convert.ToInt32(Console.ReadLine()));
+                    break;
+                case 2:
+                    d.Count(Convert.ToInt32(Console.ReadLine()));
+                    break;
+                case 3:
+                    d.BinSearch(Convert.ToInt32(Console.ReadLine()));
+                    break;
+                case 4:
+                    Console.WriteLine("Введите количество элементов массива, а затем массив");
+                    d.Copy(Convert.ToInt32(Console.ReadLine()));
+                    break;
+                case 5:
+                    d.Find(Convert.ToInt32(Console.ReadLine()));
+                    break;
+                case 6:
+                    d.FindLast(Convert.ToInt32(Console.ReadLine()));
+                    break;
+                case 7:
+                    d.IndexOf(Convert.ToInt32(Console.ReadLine()));
+                    break;
+                case 8:
+                    d.Reverse();
+                    break;
+                case 9:
+                    d.Resize(Convert.ToInt32(Console.ReadLine()));
+                    break;
+                case 10:
+                    d.Sort();
+                    break;
+                case 11:
+                    On = false;
+                    break;
+            }
+        }
+    }
+    class Basa
+    {
+        int[] a;
+        public Basa(int N)
+        {
+            this.a = new int[N];
+            for (int i = 0; i < N; i++)
+            {
+                Console.WriteLine(i + "-й элемент:");
+                this.a[i] = Convert.ToInt32(Console.ReadLine());
+            }
+        }
+        public int Count(int t)
+        {
+            return a.Count(o => o == t);
+        }
+        public int BinSearch(int t)
+        {
+            Array.Sort(a);
+            return Array.BinarySearch(a, t);
+        }
+        public void Copy(int N)
+        {
+            int[] t = new int[N];
+            for (int i = 0; i < N; i++)
+            {
+                Console.WriteLine(i + "-й элемент:");
+                t[i] = Convert.ToInt32(Console.ReadLine());
+            }
+            Array.Copy(t,a,t.Length);
+
+            return ;
+        }
+        public int Find(int t)
+        {
+            return Array.Find(a, o => o == t);
+        }
+        public int FindLast(int t)
+        {
+            return Array.FindLast(a, o => o == t);
+        }
+        public int IndexOf(int t)
+        {
+            return Array.IndexOf(a, t);
+        }
+        public void Reverse()
+        {
+            Array.Reverse(a);
+            return;
+        }
+        public void Resize(int t)
+        {
+
+            Array.Resize(ref a, t);
+            return ;
+        }
+        public void Sort()
+        {
+            Array.Sort(a);
+            return ;
+        }
+
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            while(Menu.On == true)
+            {
+                Menu.Show();
+                Menu.Option(Convert.ToInt32(Console.ReadLine()));
+            }
+        }
+    }
+}
