@@ -1,0 +1,41 @@
+# ЧИСЛО N
+print("Введите количество операций(число N)")
+N = int(input())
+a = list()
+
+# N СТРОК - ОПЕРАЦИИ
+print("Введите операции в формате 's v'")
+for i in range(N):
+    sv = input()
+    a.append(sv.split())
+
+# ЧИСЛО R
+print("Введите результат(число R)")
+R = int(input())
+
+x = 1 # коэффициент перед иксом
+b = 0 # коэффициент перед не иксом
+
+
+for i in range(N):
+    if a[i][0] == "*":
+        x*=int(a[i][1])
+        b*=int(a[i][1])
+    else:
+        if a[i][0] == "-":
+            p = -1
+        else:
+            p = 1
+
+        if "x" in a[i][1]:
+            if a[i][1] == "x":
+                a[i][1] = "1"
+            else:
+                a[i][1] = a[i][1].replace("x","")
+                
+            x+=p*int(a[i][1])
+        else:
+            b+=p*int(a[i][1])
+
+print(int((R-b)/x))
+
