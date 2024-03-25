@@ -1,1 +1,33 @@
+print("Алгоритм Форда-Беллмана")
+print("Введите число n количество вершин.")
+print("Граф будет содержать вершины 0,...,n-1")
+n = int(input())
+Tab = [[]for i in range(n)]
+lam = ['x'for i in range(n)]
+maxInt = 2147483647
 
+print("Строки ребер через пробел. если ребра нет, писать x")
+for i in range(n):
+    print(i+"-ая Строка:")
+    Tab[i]=list(input().split(' '))
+    
+print("От какой вершины искать минимальные пути?")
+y = int(input())
+lam[y] = 0
+tlam = list(lam)
+for k in range(n-1):
+    for i in range(n):
+        if lam[i]!='x':
+            Min = lam[i]
+        else:
+            Min = maxInt
+        for j in range(n):
+            if lam[j]!='x' and Tab[j][i]!='x':
+                if lam[j]+Tab[j][i] < Min:
+                    Min = lam[j]+Tab[j][i]
+        if Min!='x':
+            tlam[i] = Min
+    lam = list(tlam)
+            
+            
+print(lam)     
