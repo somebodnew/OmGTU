@@ -1,21 +1,14 @@
-# ЧИСЛО N
-print("Введите количество операций(число N)")
-N = int(input())
 a = list()
-
-# N СТРОК - ОПЕРАЦИИ
-print("Введите операции в формате 's v'")
-for i in range(N):
-    sv = input()
-    a.append(sv.split())
-
-# ЧИСЛО R
-print("Введите результат(число R)")
-R = int(input())
-
 x = 1 # коэффициент перед иксом
 b = 0 # коэффициент перед не иксом
 
+with open("input_s1_12.txt") as f:
+    N = int(f.readline().replace('\n',''))
+    for i in range(N):
+        sv = f.readline().replace('\n','')
+        a.append(sv.split())
+    R = int(f.readline().replace('\n',''))
+        
 
 for i in range(N):
     if a[i][0] == "*":
@@ -38,4 +31,3 @@ for i in range(N):
             b+=p*int(a[i][1])
 
 print(int((R-b)/x))
-
