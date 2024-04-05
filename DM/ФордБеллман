@@ -1,3 +1,4 @@
+
 print("Алгоритм Форда-Беллмана")
 print("От какой вершины искать минимальные пути?")
 y = int(input())-1
@@ -10,12 +11,13 @@ for i in range(n):
 f.close()
 
 lam = ['x' for _ in range(n)]
-print(lam)
 lam[y] = 0
 tlam = list(lam)
 maxInt = 2147483647
 
-for k in range(n-1):
+for k in range(n):
+    if k == n-1:
+        ham = list(lam)
     for i in range(n):
         if lam[i]!='x':
             Min = lam[i]
@@ -28,6 +30,9 @@ for k in range(n-1):
         if Min!='x':
             tlam[i] = Min
     lam = list(tlam)
-                      
-print(lam)     
 
+
+if ham == lam:
+    print(lam)     
+else:
+    print("Отрицательный контур")
