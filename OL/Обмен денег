@@ -1,0 +1,79 @@
+
+with open('input14.txt') as f:
+    data = f.read().splitlines()
+        
+for num in range(1, 15):    
+    ms1, *c1 = [int(x) for x in data[0].split()]
+    nunlucky1, *unlucky1 = [int(x) for x in data[1].split()]
+
+    ms2, *c2 = [int(x) for x in data[2].split()]
+    nunlucky2, *unlucky2 = [int(x) for x in data[3].split()]
+
+    moneyparts = [int(x) for x in data[4].split()]
+
+    c1.append(1)
+    c2.append(1)
+    
+    quantity = 0
+    tmp = 0
+    unh = 0
+    i = 1
+    while i <= len(moneyparts):
+        tmp = moneyparts[-i]
+        j = 0
+        unh = 0
+        while j < len(unlucky1):
+            if tmp > unlucky1[j]:
+                unh += 1
+            j += 1
+        tmp -= unh
+        j = i
+        tmpc = 1
+        while j > 0:
+            tmpc *= c1[-j]
+            j -= 1
+        quantity += tmp * tmpc
+        i += 1
+
+    i = 0
+    money2 = []
+    while i < len(c2):
+        j = i
+        tmpc = 1
+        while j < len(c2):
+            tmpc *= c2[j]
+            j += 1
+        m = quantity // tmpc
+
+        nclearmoney = 0
+        res = 0
+        while nclearmoney < m:
+            flag = False
+            j = 0
+            while j < len(unlucky2):
+                if res == unlucky2[j]:
+                    break
+                j += 1
+            if j == len(unlucky2):
+                flag = True
+            res += 1
+            if flag:
+                nclearmoney += 1
+ 
+        tmp = m
+
+        flag = False
+        while flag == False:
+            j = 0
+            while j < len(unlucky2):
+                if res == unlucky2[j]:
+                    res += 1
+                    break
+                j += 1
+            if j == len(unlucky2):
+                flag = True
+        money2.append(str(res))
+        quantity -= tmp * tmpc
+        i += 1
+print(' '.join(money2))
+    
