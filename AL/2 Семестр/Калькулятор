@@ -1,0 +1,137 @@
+using System;
+using System.Collections.Generic;
+
+public class Program {
+  public static void Main (string[] args) {
+    Console.WriteLine ("Write \"help\" for more info");
+    ConsoleMenu menu = new ConsoleMenu("menu:: ");
+    menu.Add("int", new IntegerItem());
+    menu.Add("double", new DoubleItem());
+    menu.Run();
+  }
+}
+
+
+
+public class Calc<Type>{
+  public Type Plus(Type a, Type b){
+    dynamic a1 = a;
+    dynamic b1 = b;
+    return a1 + b1;
+  }
+
+  public Type Minus(Type a, Type b){
+    dynamic a1 = a;
+    dynamic b1 = b;
+    return a1 - b1;
+  }
+
+  public Type Divide(Type a, Type b){
+    dynamic a1 = a;
+    dynamic b1 = b;
+    return a1 / b1;
+  }
+
+  public Type Mult(Type a, Type b){
+    dynamic a1 = a;
+    dynamic b1 = b;
+    return a1 * b1;
+  }
+}
+
+class ConsoleMenu{
+  
+  private Dictionary<string, MenuItem> Items;
+  public string Welcome;
+
+  public ConsoleMenu(string welcome){
+    Items = new Dictionary<string, MenuItem>();
+    Welcome = welcome;
+    Items.Add("help", new MenuItem("Display help", Help));
+    Items.Add("exit", new MenuItem("Exit menu", ()=>{}));
+  }
+
+  private void Help(){
+    foreach(var i in Items){
+      Console.WriteLine($"{i.Key}\t-\t{i.Value.Description}");
+    }
+  } 
+
+  public void Add(string key, MenuItem item){
+    Items[key] = item;
+  }
+
+  public void Run(){
+    while(true){
+      Console.Write(Welcome);
+      string command = Console.ReadLine();
+      if(command == "exit"){
+        break;
+      }
+      if(Items.ContainsKey(command)){
+        try{
+          Items[command].Run();
+        } catch (Exception e){
+          Console.WriteLine($"Error! - [{e.Message}]");
+        }
+      } else {
+        Console.WriteLine("Command not found");
+      }
+    }
+  }
+}
+
+class MenuItem{
+  public delegate void Job();
+
+  public string Description;
+  public Job Exec;
+  
+  public MenuItem(string description, Job job){
+    Description = description;
+    Exec = job;
+  }
+
+  public void Run(){
+    Exec();
+  }
+}
+
+class IntegerItem : MenuItem{
+  
+  public IntegerItem() 
+  : base("Вычисление с целочисленными параметрами", Do){}
+
+  static private void Do(){
+    Console.WriteLine("Введите первое число");
+    int a = int.Parse(Console.ReadLine());
+    Console.WriteLine("Введите второе число");
+    int b = int.Parse(Console.ReadLine());
+
+    Calc<int> calc = new Calc<int>();
+    Console.WriteLine($"Результат сложения: {calc.Plus(a, b)}");
+    Console.WriteLine($"Результат вычитания: {calc.Minus(a, b)}");
+    Console.WriteLine($"Результат умножения: {calc.Mult(a, b)}");
+    Console.WriteLine($"Результат деления: {calc.Divide(a, b)}");
+  }
+  
+}
+
+class DoubleItem : MenuItem{
+
+  public DoubleItem() 
+  : base("Вычисление с вещественными параметрами", Do){}
+
+  static private void Do(){
+    Console.WriteLine("Введите первое число");
+    double a = double.Parse(Console.ReadLine());
+    Console.WriteLine("Введите второе число");
+    double b = double.Parse(Console.ReadLine());
+
+    Calc<double> calc = new Calc<double>();
+    Console.WriteLine($"Результат сложения: {calc.Plus(a, b)}");
+    Console.WriteLine($"Результат вычитания: {calc.Minus(a, b)}");
+    Console.WriteLine($"Результат умножения: {calc.Mult(a, b)}");
+    Console.WriteLine($"Результат деления: {calc.Divide(a, b)}");
+  }
+}
