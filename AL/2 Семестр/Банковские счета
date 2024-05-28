@@ -1,0 +1,409 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+    static List<CustomerAccount> accountList = new List<CustomerAccount>
+    {
+        new CustomerAccount("123456", "John Doe", "555-1234", 5000, 2000),
+        new CustomerAccount("987654", "Jane Smith", "555-5678", 7000, 3000),
+        new CustomerAccount("456789", "Alice Johnson", "555-2468", 6000, 2500),
+        new CustomerAccount("654321", "Bob Brown", "555-1357", 8000, 4000),
+        new CustomerAccount("321654", "Eve Davis", "555-9876", 5500, 1800),
+        new CustomerAccount("789123", "Chris Lee", "555-3690", 6500, 2800),
+        new CustomerAccount("234567", "Sarah Wilson", "555-7531", 7500, 3200),
+        new CustomerAccount("876543", "Mike Clark", "555-8246", 9000, 4500),
+        new CustomerAccount("135792", "Emily White", "555-6420", 4800, 1900),
+        new CustomerAccount("579123", "Alex Turner", "555-9182", 6700, 2700)
+    };
+
+    public static CRUD<CustomerAccount> Accounts = new CRUD<CustomerAccount>(accountList);
+
+    public static void Main(string[] args)
+    {
+        ConsoleMenu menu = new ConsoleMenu("bank::>");
+        menu.Add("add", new AddAccountMenuItem());
+        menu.Add("get", new ReadAccountMenuItem());
+        menu.Add("upd", new UpdateAccountMenuItem());
+        menu.Add("del", new DeleteAccountMenuItem());
+        menu.Add("all", new ShowAllAccountsMenuItem());
+        menu.Add("task1", new GetAccountsNegativeBalanceMenuItem());
+        menu.Add("task2", new GetTopClientsByBalanceMenuItem());
+        menu.Add("task3", new GetAverageIncomeMenuItem());
+        menu.Add("task4", new GetSummaryOfTaxesMenuItem());
+        
+        menu.Run();
+    }
+}
+
+public record CustomerAccount(
+        string AccountNumber,
+        string FullName,
+        string PhoneNumber,
+        decimal Income,
+        decimal Expenses
+)
+{
+    public decimal TaxAmount => Income * 0.2m;
+}
+
+class CRUD<Entity>
+{
+    private HashSet<Entity> entities;
+
+    public CRUD()
+    {
+        entities = new HashSet<Entity>();
+    }
+
+    public CRUD(IEnumerable<Entity> entities)
+    {
+        this.entities = entities.ToHashSet();
+    }
+
+    public void Add(Entity entity)
+    {
+        entities.Add(entity);
+    }
+
+    public void Update(Func<Entity, bool> where, Func<Entity, Entity> updater)
+    {
+        entities = entities.Where(where).Select(updater).ToHashSet();
+    }
+
+    public void Delete(Func<Entity, bool> where)
+    {
+        entities = entities.Where(e => !where(e)).ToHashSet();
+    }
+
+    public List<Entity> GetAll(Func<Entity, bool> where)
+    {
+        return entities.Where(where).ToList();
+    }
+
+    public Entity Get(Func<Entity, bool> where)
+    {
+        return entities.Where(where).FirstOrDefault();
+    }
+}
+
+class ConsoleMenu
+{
+
+    private Dictionary<string, MenuItem> Items;
+    public string Welcome;
+
+    public ConsoleMenu(string welcome)
+    {
+        Items = new Dictionary<string, MenuItem>();
+        Welcome = welcome;
+        Items.Add("help", new MenuItem("Display help", Help));
+        Items.Add("exit", new MenuItem("Exit menu", () => { }));
+    }
+
+    private void Help()
+    {
+        foreach (var i in Items)
+        {
+            Console.WriteLine($"{i.Key}\t\t-\t\t{i.Value.Description}");
+        }
+    }
+
+    public void Add(string key, MenuItem item)
+    {
+        Items[key] = item;
+    }
+
+    public void Run()
+    {
+        while (true)
+        {
+            Console.Write(Welcome);
+            string command = Console.ReadLine().Trim();
+            if (command == "exit")
+            {
+                break;
+            }
+            if (Items.ContainsKey(command))
+            {
+                try
+                {
+                    Items[command].Run();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error! - [{e.Message}]");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Command not found");
+            }
+        }
+    }
+}
+
+class MenuItem
+{
+    public delegate void Job();
+
+    public string Description;
+    public Job Exec;
+
+    public MenuItem(string description, Job job)
+    {
+        Description = description;
+        Exec = job;
+    }
+
+    protected MenuItem(string description)
+    {
+        Description = description;
+        Exec = () => { };
+    }
+
+    protected void AddJob(Job job)
+    {
+        Exec = job;
+    }
+
+    public void Run()
+    {
+        Exec();
+    }
+}
+
+class AddAccountMenuItem : MenuItem
+{
+
+    public AddAccountMenuItem()
+            : base("Добавить новый счёт")
+    {
+    }
+
+    private void AddAccount()
+    {
+        Console.Write("Введите номер счёта: ");
+        string accountNumber = Console.ReadLine();
+
+        Console.Write("Введите ФИО клиента: ");
+        string fullName = Console.ReadLine();
+
+        Console.Write("Введите номерт телефона клиента: ");
+        string phoneNumber = Console.ReadLine();
+
+        decimal income, expenses;
+
+        Console.Write("Введите доход: ");
+        decimal.TryParse(Console.ReadLine(), out income);
+
+        Console.Write("Введите расход: ");
+        decimal.TryParse(Console.ReadLine(), out expenses);
+
+        var account = new CustomerAccount(
+                accountNumber,
+                fullName,
+                phoneNumber,
+                income,
+                expenses
+        );
+
+        Program.Accounts.Add(account);
+        Console.WriteLine("Аккаунт создан успешно");
+    }
+}
+
+class ReadAccountMenuItem : MenuItem
+{
+    public ReadAccountMenuItem()
+            : base("Вывод на экран информации о счёте")
+    {
+        AddJob(ReadAccount);
+    }
+    private void ReadAccount()
+    {
+        Console.Write("Введите номер счёта: ");
+        string accountNumber = Console.ReadLine();
+        var account = Program.Accounts.Get(acc => acc.AccountNumber == accountNumber);
+
+        if (account != null) throw new Exception("Аккаунт не найден");
+
+        Console.WriteLine($"Номер счёта: {account.AccountNumber}");
+        Console.WriteLine($"ФИО: {account.FullName}");
+        Console.WriteLine($"Номер телефона: {account.PhoneNumber}");
+        Console.WriteLine($"Доход: {account.Income}");
+        Console.WriteLine($"Расход: {account.Expenses}");
+        Console.WriteLine($"Налоги: {account.TaxAmount}");
+
+
+    }
+}
+
+class UpdateAccountMenuItem : MenuItem
+{
+    public UpdateAccountMenuItem()
+            : base("Обновление информации о счёте")
+    {
+        AddJob(UpdateAccount);
+    }
+    private void UpdateAccount()
+    {
+        Console.Write("Введите номер счёта : ");
+        string accountNumber = Console.ReadLine();
+        var account = Program.Accounts.Get(acc => acc.AccountNumber == accountNumber);
+
+        if (account != null) throw new Exception("Счёт не найден");
+
+        Console.Write("Введите новых доход: ");
+        decimal newIncome;
+        decimal.TryParse(Console.ReadLine(), out newIncome);
+        Console.Write("Введите новый расход: ");
+        decimal newExpenses;
+        decimal.TryParse(Console.ReadLine(), out newExpenses);
+        Program.Accounts.Update(acc => acc.AccountNumber == accountNumber, acc =>
+        {
+            return new CustomerAccount(
+                acc.AccountNumber,
+                acc.FullName,
+                acc.PhoneNumber,
+                acc.Income + newIncome,
+                acc.Expenses + newExpenses
+            );
+        });
+        Console.WriteLine("Счёт обновлён успешно");
+
+    }
+}
+
+class DeleteAccountMenuItem : MenuItem
+{
+    public DeleteAccountMenuItem()
+            : base("Закрытие счёта")
+    {
+        AddJob(DeleteAccount);
+    }
+    private void DeleteAccount()
+    {
+        Console.Write("Введите номер закрываемого счёта: ");
+        string accountNumber = Console.ReadLine();
+        Program.Accounts.Delete(acc => acc.AccountNumber == accountNumber);
+        Console.WriteLine("Счёт закрыт успешно");
+    }
+}
+
+class ShowAllAccountsMenuItem : MenuItem
+{
+    public ShowAllAccountsMenuItem()
+            : base("Показать все счета")
+    {
+        AddJob(DeleteAccount);
+    }
+    private void DeleteAccount()
+    {
+        Program.Accounts.GetAll(e => true).ForEach(Console.WriteLine);
+    }
+}
+
+class GetAccountsNegativeBalanceMenuItem : MenuItem
+{
+    public GetAccountsNegativeBalanceMenuItem()
+            : base("Вывести счета с отрицательным балансом")
+    {
+        AddJob(GetAccountsNegativeBalance);
+    }
+    private void GetAccountsNegativeBalance()
+    {
+        var accountsWithNegativeBalance = Program.Accounts.GetAll(acc => acc.Income - acc.Expenses < 0);
+
+        if (accountsWithNegativeBalance.Count > 0)
+        {
+            foreach (var account in accountsWithNegativeBalance)
+            {
+                Console.WriteLine($"Номер счёта: {account.AccountNumber}");
+                Console.WriteLine($"ФИО клиента: {account.FullName}");
+                Console.WriteLine($"Баланс: {account.Income - account.Expenses}");
+                Console.WriteLine("-------------");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Таких счетов не обнаружено.");
+        }
+    }
+}
+
+class GetTopClientsByBalanceMenuItem : MenuItem
+{
+    public GetTopClientsByBalanceMenuItem()
+            : base("Получить список клиентов с наибольшим балансом")
+    {
+        AddJob(GetTopClientsByBalance);
+    }
+    private void GetTopClientsByBalance()
+    {
+        var topClients = Program.Accounts.GetAll(acc => true)
+            .OrderByDescending(acc => acc.Income - acc.Expenses)
+            .GroupBy(e => e.FullName)
+            .Select(g => g.Aggregate((acc1, acc2) => new CustomerAccount(
+                "", 
+                g.Key,
+                acc1.PhoneNumber,
+                acc1.Income + acc2.Income,
+                acc1.Expenses + acc2.Expenses
+            )))
+            .Take(3);
+        if (topClients.Any())
+        {
+            Console.WriteLine("Клиенты с наибольшим балансом:");
+            foreach (var client in topClients)
+            {
+                Console.WriteLine($"ФИО: {client.FullName}");
+                Console.WriteLine($"Баланс: {client.Income - client.Expenses}");
+                Console.WriteLine("-------------");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Клиентов не найдено");
+        }
+    }
+}
+
+class GetAverageIncomeMenuItem : MenuItem
+{
+    public GetAverageIncomeMenuItem()
+            : base("Получить средний доход по счетам")
+    {
+        AddJob(GetAverageIncome);
+    }
+    private void GetAverageIncome()
+    {
+        decimal totalIncome = Program.Accounts.GetAll(acc => true).Sum(acc => acc.Income);
+        int totalAccounts = Program.Accounts.GetAll(acc => true).Count;
+
+        if (totalAccounts > 0)
+        {
+            decimal averageIncome = totalIncome / totalAccounts;
+            Console.WriteLine($"Средний доход по всем счетам: {averageIncome}");
+        }
+        else
+        {
+            Console.WriteLine("Счетов не найдено.");
+        }
+    }
+}
+
+class GetSummaryOfTaxesMenuItem : MenuItem
+{
+    public GetSummaryOfTaxesMenuItem()
+            : base("Получить сумму всех налогов")
+    {
+        AddJob(GetSummaryOfTaxes);
+    }
+    private void GetSummaryOfTaxes()
+    {
+        decimal totalTaxes = Program.Accounts.GetAll(acc => true).Sum(acc => acc.TaxAmount);
+        Console.WriteLine($"Сумма всех налогов: {totalTaxes}");
+    }
+}
