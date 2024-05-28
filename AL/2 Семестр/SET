@@ -1,0 +1,54 @@
+using System;
+using System.Collections.Immutable;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        SortedSet<int> nums1 = new SortedSet<int>();
+        SortedSet<int> nums2 = new SortedSet<int>();
+        SortedSet<int> nums3 = new SortedSet<int>();
+
+        for (int i = 0; i < 13; i++){
+            nums1.Add(i * 2);
+            nums2.Add(i * 3);
+            nums3.Add(i * 4);
+        }
+
+        PrintSet(nums1, "1 множество: ");
+        PrintSet(nums2, "2 множество: ");
+        PrintSet(nums3, "3 множество: ");
+
+        SortedSet<int> universalSet = new SortedSet<int>();
+        universalSet.UnionWith(nums1);
+        universalSet.UnionWith(nums2);
+        universalSet.UnionWith(nums3);
+        PrintSet(universalSet, "Объединение: ");
+
+        SortedSet<int> complement1 = new SortedSet<int>(universalSet);
+        complement1.ExceptWith(nums1);
+
+        SortedSet<int> complement2 = new SortedSet<int>(universalSet);
+        complement2.ExceptWith(nums2);
+
+        SortedSet<int> complement3 = new SortedSet<int>(universalSet);
+        complement3.ExceptWith(nums3);
+
+        universalSet.IntersectWith(nums1);
+        universalSet.IntersectWith(nums2);
+        universalSet.IntersectWith(nums3);
+        PrintSet(universalSet, "Пересечение: ");
+
+        PrintSet(complement1, "Дополнение 1: ");
+        PrintSet(complement2, "Дополнение 2: ");
+        PrintSet(complement3, "Дополнение 3: ");
+
+    }
+    static void PrintSet(SortedSet<int> set, string s)
+    {
+        Console.Write(s);
+        foreach (int num in set)
+            Console.Write(num + " ");
+        Console.WriteLine("\n");
+    }
+}
