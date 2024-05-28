@@ -1,0 +1,185 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program {
+  public static void Main (string[] args) {
+    Console.WriteLine ("Write \"help\" for more info");
+    List<Call> calls = new List<Call>();
+    ConsoleMenu menu = new ConsoleMenu("calldb:>");
+    menu.Add("add", new AddCallItem(calls));
+    menu.Add("list", new ShowCallsItem(calls));
+    menu.Add("analyze", new AnalyzeAbonent(calls));
+    menu.Run();
+  }
+}
+
+record Call(string from, string dest, DateTime date, int time);
+
+class ConsoleMenu{
+
+  private Dictionary<string, MenuItem> Items;
+  public string Welcome;
+
+  public ConsoleMenu(string welcome){
+    Items = new Dictionary<string, MenuItem>();
+    Welcome = welcome;
+    Items.Add("help", new MenuItem("Display help", Help));
+    Items.Add("exit", new MenuItem("Exit menu", ()=>{}));
+  }
+
+  private void Help(){
+    foreach(var i in Items){
+      Console.WriteLine($"{i.Key}\t\t-\t\t{i.Value.Description}");
+    }
+  } 
+
+  public void Add(string key, MenuItem item){
+    Items[key] = item;
+  }
+
+  public void Run(){
+    while(true){
+      Console.Write(Welcome);
+      string command = Console.ReadLine().Trim();
+      if(command == "exit"){
+        break;
+      }
+      if(Items.ContainsKey(command)){
+        try{
+          Items[command].Run();
+        } catch (Exception e){
+          Console.WriteLine($"Error! - [{e.Message}]");
+        }
+      } else {
+        Console.WriteLine("Command not found");
+      }
+    }
+  }
+}
+
+class MenuItem{
+  public delegate void Job();
+
+  public string Description;
+  public Job Exec;
+
+  public MenuItem(string description, Job job){
+    Description = description;
+    Exec = job;
+  }
+
+  protected MenuItem(string description){
+    Description = description;
+    Exec = ()=>{};
+  }
+
+  protected void AddJob(Job job){
+    Exec = job;
+  }
+
+  public void Run(){
+    Exec();
+  }
+}
+
+class AddCallItem : MenuItem{
+  private List<Call> Calls;
+  
+  public AddCallItem(List<Call> calls) : base("Добавить звонок в базу данных"){
+    Calls = calls;
+    AddJob(AddCall);
+  }
+  private void AddCall(){
+    Console.Write("Введите номер телефона звонившего: ");
+    string phoneFrom = Console.ReadLine().Trim().Replace("-", "").Replace("+7", "8").Replace(" ", "");
+    Console.Write("Введите номер телефона кому звонили: ");
+    string phoneDest = Console.ReadLine().Trim().Replace("-", "").Replace("+7", "8").Replace(" ", "");
+    Console.Write("Введите дату звонка: ");
+    DateTime date = DateTime.Parse(Console.ReadLine());
+    Console.Write("Введите продолжительность звонка: ");
+    int time = int.Parse(Console.ReadLine());
+
+    Calls.Add(new Call(phoneFrom, phoneDest, date, time));
+
+    Console.WriteLine("Запись успешно добавлена");
+  }
+}
+
+class ShowCallsItem : MenuItem{
+  private List<Call> Calls;
+
+  public ShowCallsItem(List<Call> calls) : base("Показать все записи"){
+    Calls = calls;
+    AddJob(ShowCalls);
+  }
+  private void ShowCalls(){
+    Console.WriteLine("Список всех звонков:");
+    Calls.ForEach(e => Console.WriteLine($"\t{e}"));
+  }
+}
+
+class AnalyzeAbonent : MenuItem{
+  private List<Call> Calls;
+
+  public AnalyzeAbonent(List<Call> calls) : base("Показать, на какой номер чаще всего звонил выбранный абонент"){
+    Calls = calls;
+    AddJob(Analyze);
+  }
+  private void Analyze(){
+    Console.Write("Введите номер телефона абонента: ");
+    string phone = Console.ReadLine().Trim().Replace("-", "").Replace("+7", "8").Replace(" ", "");
+    List<Call> target = Calls.FindAll(e => e.from == phone);
+    if(target.Count == 0) throw new Exception("Такого абонента нет в базе данных");
+    Dictionary<string, int> numbers = new Dictionary<string, int>();
+    target.ForEach(e => {
+      if(!numbers.ContainsKey(e.dest)) numbers.Add(e.dest, 1);
+      else numbers[e.dest]++;
+    });
+    string max = "";
+    int maxCount = 0;
+    foreach(var e in numbers){
+      if(e.Value > maxCount){
+        maxCount = e.Value;
+        max = e.Key;
+      }
+    }
+
+    List<Call> res = target.FindAll(e => e.dest == max);
+    res = res.OrderBy(e => e.date).ToList<Call>();
+    Console.WriteLine("Результат:");
+    res.ForEach(e => Console.WriteLine($"\t{e}"));
+  }
+}
+
+class TimeAnalyzeItem : MenuItem{
+  private List<Call> Calls;
+
+  public TimeAnalyzeItem(List<Call> calls) : base("Показать, какой абонент с каким больше всего разговаривал"){
+    Calls = calls;
+    AddJob(Analyze);
+  }
+  private void Analyze(){
+    List<string> abonents = Calls.Select(e => e.from).Distinct().ToList<string>();
+    foreach(car i in abonents){
+      List<Call> target = Calls.FindAll(e => e.from == i);
+      Dictionary<string, int> numbers = new Dictionary<string, int>();
+      target.ForEach(e => {
+        if(!numbers.ContainsKey(e.dest)) numbers.Add(e.dest, 1);
+        else numbers[e.dest]+= e.time;
+      });
+      string max = "";
+      int maxCount = 0;
+      foreach(var e in numbers){
+        if(e.Value > maxCount){
+          maxCount = e.Value;
+          max = e.Key;
+        }
+      }
+      List<Call> res = target.FindAll(e => e.dest == max);
+      res = res.OrderBy(e => e.date).ToList<Call>();
+      Console.WriteLine($"Результат для {i}:");
+      res.ForEach(e => Console.WriteLine($"\t{e}"));
+    }
+  }
+}
