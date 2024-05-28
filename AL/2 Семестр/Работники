@@ -1,0 +1,424 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+
+    public static List<Worker> workersList = new List<Worker>
+    {
+        new Worker(1, "John Doe", "Bachelor's Degree", "Software Developer", 5000, 100, 50),
+        new Worker(2, "Jane Smith", "Master's Degree", "Data Analyst", 6000, 80, 60),
+        new Worker(3, "Alice Johnson", "PhD", "Research Scientist", 7000, 120, 70),
+        new Worker(4, "Bob Brown", "Bachelor's Degree", "Web Designer", 4500, 90, 40),
+        new Worker(5, "Emily Davis", "Bachelor's Degree", "Mobile App Developer", 5500, 110, 55),
+        new Worker(6, "Michael Wilson", "Master's Degree", "Database Administrator", 6500, 95, 65),
+        new Worker(7, "Sophia Martinez", "Bachelor's Degree", "UX Designer", 5100, 85, 45),
+        new Worker(8, "William Anderson", "Bachelor's Degree", "Frontend Developer", 5200, 105, 52),
+        new Worker(9, "Olivia Thomas", "Master's Degree", "System Analyst", 6300, 115, 63),
+        new Worker(10, "James Garcia", "Bachelor's Degree", "Software Engineer", 5900, 75, 58)
+    };
+    
+    public static CRUD<Worker> Workers = new CRUD<Worker>(workersList);
+
+    public static void Main(string[] args)
+    {
+        ConsoleMenu menu = new ConsoleMenu("workers::>");
+        menu.Add("add", new AddWorkerMenuItem());
+        menu.Add("get", new ShowWorkerInfoMenuItem());
+        menu.Add("upd", new UpdateWorkerMenuItem());
+        menu.Add("del", new DeleteWorkerMenuItem());
+        menu.Add("all", new ShowAllWorkersMenuItem());
+        menu.Add("task1", new FilterWorkersBySalaryMenuItem());
+        menu.Add("task2", new CountProductionUnitsMenuItem());
+        menu.Add("task3", new SummaryProductionUnitsMenuItem());
+        
+        menu.Run();
+        
+    }
+
+}
+
+public record Worker(
+    int EmployeeNumber,
+    string FullName,
+    string Education,
+    string Speciality,
+    decimal Salary,
+    int ProductsManufactured,
+    decimal ProductUnitPrice
+);
+
+class CRUD<Entity>
+{
+    private HashSet<Entity> entities;
+
+    public CRUD()
+    {
+        entities = new HashSet<Entity>();
+    }
+
+    public CRUD(IEnumerable<Entity> entities)
+    {
+        this.entities = entities.ToHashSet();
+    }
+
+    public void Add(Entity entity)
+    {
+        entities.Add(entity);
+    }
+
+    public void Update(Func<Entity, bool> where, Func<Entity, Entity> updater)
+    {
+        entities = entities.Where(where).Select(updater).ToHashSet();
+    }
+
+    public void Delete(Func<Entity, bool> where)
+    {
+        entities = entities.Where(e => !where(e)).ToHashSet();
+    }
+
+    public List<Entity> GetAll(Func<Entity, bool> where)
+    {
+        return entities.Where(where).ToList();
+    }
+
+    public Entity Get(Func<Entity, bool> where)
+    {
+        return entities.Where(where).FirstOrDefault();
+    }
+}
+
+class ConsoleMenu
+{
+
+    private Dictionary<string, MenuItem> Items;
+    public string Welcome;
+
+    public ConsoleMenu(string welcome)
+    {
+        Items = new Dictionary<string, MenuItem>();
+        Welcome = welcome;
+        Items.Add("help", new MenuItem("Display help", Help));
+        Items.Add("exit", new MenuItem("Exit menu", () => { }));
+    }
+
+    private void Help()
+    {
+        foreach (var i in Items)
+        {
+            Console.WriteLine($"{i.Key}\t\t-\t\t{i.Value.Description}");
+        }
+    }
+
+    public void Add(string key, MenuItem item)
+    {
+        Items[key] = item;
+    }
+
+    public void Run()
+    {
+        while (true)
+        {
+            Console.Write(Welcome);
+            string command = Console.ReadLine().Trim();
+            if (command == "exit")
+            {
+                break;
+            }
+            if (Items.ContainsKey(command))
+            {
+                try
+                {
+                    Items[command].Run();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error! - [{e.Message}]");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Command not found");
+            }
+        }
+    }
+}
+
+class MenuItem
+{
+    public delegate void Job();
+
+    public string Description;
+    public Job Exec;
+
+    public MenuItem(string description, Job job)
+    {
+        Description = description;
+        Exec = job;
+    }
+
+    protected MenuItem(string description)
+    {
+        Description = description;
+        Exec = () => { };
+    }
+
+    protected void AddJob(Job job)
+    {
+        Exec = job;
+    }
+
+    public void Run()
+    {
+        Exec();
+    }
+}
+
+
+class AddWorkerMenuItem : MenuItem
+{
+    public AddWorkerMenuItem() : base("Добавление в базу нового работника")
+    {
+        AddJob(Do);
+    }
+
+    private void Do()
+    {
+        {
+            Console.Write("Введите номер работника: ");
+            int employeeNumber = int.Parse(Console.ReadLine());
+
+            Console.Write("Введите ФИО работника: ");
+            string fullName = Console.ReadLine();
+
+            Console.Write("Введите образование работника: ");
+            string education = Console.ReadLine();
+
+            Console.Write("Введите специальность работника: ");
+            string speciality = Console.ReadLine();
+
+            Console.Write("Введите зарплату работника: ");
+            decimal salary = decimal.Parse(Console.ReadLine());
+
+            Console.Write("Введите количество произведенных товаров: ");
+            int productsManufactured = int.Parse(Console.ReadLine());
+
+            Console.Write("Введите цену товара за единицу: ");
+            decimal productUnitPrice = decimal.Parse(Console.ReadLine());
+
+            Worker newWorker = new Worker(
+                employeeNumber,
+                fullName,
+                education,
+                speciality,
+                salary,
+                productsManufactured,
+                productUnitPrice
+            );
+
+            Program.Workers.Add(newWorker);
+
+            Console.WriteLine("Воркер успешно добавлен.");
+        }
+    }
+}
+
+class ShowWorkerInfoMenuItem : MenuItem
+{
+    public ShowWorkerInfoMenuItem() : base("Вывод информации о работнике")
+    {
+        AddJob(Do);
+    }
+
+    private void Do()
+    {
+        Console.Write("Введите номер работника: ");
+        int employeeNumber = int.Parse(Console.ReadLine());
+
+        Worker worker = Program.Workers.Get(w => w.EmployeeNumber == employeeNumber);
+
+        if (worker == null) throw new Exception("Работник не найден");
+
+        Console.WriteLine($"Номер работника: {worker.EmployeeNumber}");
+        Console.WriteLine($"ФИО: {worker.FullName}");
+        Console.WriteLine($"Образование: {worker.Education}");
+        Console.WriteLine($"Специальность: {worker.Speciality}");
+        Console.WriteLine($"Зарплата: {worker.Salary}");
+        Console.WriteLine($"Количество произведенных товаров: {worker.ProductsManufactured}");
+        Console.WriteLine($"Цена товара за единицу: {worker.ProductUnitPrice}");
+
+    }
+}
+
+class UpdateWorkerMenuItem : MenuItem
+{
+    public UpdateWorkerMenuItem() : base("Обновление информации о работнике")
+    {
+        AddJob(Do);
+    }
+
+    private void Do()
+    {
+        Console.Write("Введите номер работника: ");
+        int employeeNumber = int.Parse(Console.ReadLine());
+
+        Worker worker = Program.Workers.Get(w => w.EmployeeNumber == employeeNumber);
+
+        if (worker == null) throw new Exception("Работник не найден");
+
+        Console.Write("Введите новое ФИО работника: ");
+        string FullName = Console.ReadLine();
+
+        Console.Write("Введите новое образование работника: ");
+        string Education = Console.ReadLine();
+
+        Console.Write("Введите новую специальность работника: ");
+        string Speciality = Console.ReadLine();
+
+        Console.Write("Введите новую зарплату работника: ");
+        decimal Salary = decimal.Parse(Console.ReadLine());
+
+        Console.Write("Введите новое количество произведенных товаров: ");
+        int ProductsManufactured = int.Parse(Console.ReadLine());
+
+        Console.Write("Введите новую цену товара за единицу: ");
+        decimal ProductUnitPrice = decimal.Parse(Console.ReadLine());
+
+        Worker updatedWorker = new Worker(
+            employeeNumber,
+            FullName,
+            Education,
+            Speciality,
+            Salary,
+            ProductsManufactured,
+            ProductUnitPrice
+            );
+
+        Program.Workers.Update((e) => e.EmployeeNumber == employeeNumber, (e) => updatedWorker);
+
+        Console.WriteLine("Информация о работнике успешно обновлена.");
+    }
+}
+
+class DeleteWorkerMenuItem : MenuItem
+{
+    public DeleteWorkerMenuItem() : base("Удаление работника")
+    {
+        AddJob(Do);
+    }
+
+    private void Do()
+    {
+        Console.Write("Введите номер работника: ");
+        int employeeNumber = int.Parse(Console.ReadLine());
+
+        Worker worker = Program.Workers.Get(w => w.EmployeeNumber == employeeNumber);
+
+        if (worker == null) throw new Exception("Работник не найден");
+
+        Program.Workers.Delete(e => e.EmployeeNumber == employeeNumber);
+        Console.WriteLine("Работник успешно удален.");
+    }
+}
+
+class ShowAllWorkersMenuItem : MenuItem
+{
+    public ShowAllWorkersMenuItem() : base("Вывод всех работников")
+    {
+        AddJob(Do);
+    }
+
+    private void Do()
+    {
+        Program.Workers.GetAll((e)=>{return true;}).ForEach(Console.WriteLine);
+    }
+}
+
+class FilterWorkersBySalaryMenuItem : MenuItem
+{
+    public FilterWorkersBySalaryMenuItem() : base("Показать сотрудников с зарплатой меньшей, чем стоимость производимой ими продукции")
+    {
+        AddJob(Do);
+    }
+    private void Do()
+    {
+        List<Worker> filteredWorkers = Program.Workers.GetAll(worker => worker.Salary < (worker.ProductsManufactured * worker.ProductUnitPrice));
+        if (filteredWorkers.Count == 0)
+        {
+            Console.WriteLine("Не найдено работников с зарплатой меньшей, чем стоимость производимой ими продукции");
+        }
+        else
+        {
+            foreach (var worker in filteredWorkers)
+            {
+                Console.WriteLine($"Номер сотрудника: {worker.EmployeeNumber}");
+                Console.WriteLine($"ФИО: {worker.FullName}");
+                Console.WriteLine($"Зарплата: {worker.Salary}");
+                Console.WriteLine($"Общая стоимость продукта: {worker.ProductsManufactured * worker.ProductUnitPrice}");
+                Console.WriteLine("--------------");
+            }
+        }
+    }
+}
+
+class CountProductionUnitsMenuItem : MenuItem
+{
+    public CountProductionUnitsMenuItem() : base("Показать количество единиц произведённой продукции каждого работника")
+    {
+        AddJob(Do);
+    }
+    private void Do()
+    {
+        var workersProductionUnits = Program.Workers.GetAll(worker => true)
+            .Select(worker => new { Worker = worker, TotalProductionUnits = worker.ProductsManufactured * worker.ProductUnitPrice });
+        foreach (var workerProductionUnits in workersProductionUnits)
+        {
+            Console.WriteLine($"Номер работника: {workerProductionUnits.Worker.EmployeeNumber}");
+            Console.WriteLine($"ФИО: {workerProductionUnits.Worker.FullName}");
+            Console.WriteLine($"Количество единиц произведённой продукции: {workerProductionUnits.TotalProductionUnits}");
+            Console.WriteLine("--------------");
+        }
+    }
+}
+
+class SummaryProductionUnitsMenuItem : MenuItem
+{
+    public SummaryProductionUnitsMenuItem() : base("Подсчёт общего количества произведённой продукции")
+    {
+        AddJob(Do);
+    }
+    private void Do()
+    {
+        var totalProductionUnits = Program.Workers.GetAll(worker => true)
+            .Sum(worker => worker.ProductsManufactured * worker.ProductUnitPrice);
+        Console.WriteLine($"Общее количество единиц продукции: {totalProductionUnits}");
+    }
+}
+
+class FilterWorkersBySalaryExceedsHalfProductsMenuItem : MenuItem
+{
+    public FilterWorkersBySalaryExceedsHalfProductsMenuItem() : base("Показать работников, чья зарплата не менее 50% от стоимости произведённой ими продукции")
+    {
+        AddJob(Do);
+    }
+    private void Do()
+    {
+        List<Worker> filteredWorkers = Program.Workers.GetAll(worker => worker.Salary > (worker.ProductsManufactured * worker.ProductUnitPrice / 2));
+        if (filteredWorkers.Count == 0)
+        {
+            Console.WriteLine("Нет таких работников");
+        }
+        else
+        {
+            foreach (var worker in filteredWorkers)
+            {
+                Console.WriteLine($"Номер работника: {worker.EmployeeNumber}");
+                Console.WriteLine($"ФИО: {worker.FullName}");
+                Console.WriteLine($"Зарплата: {worker.Salary}");
+                Console.WriteLine($"Стоимость произведённой им продукции: {worker.ProductsManufactured * worker.ProductUnitPrice}");
+                Console.WriteLine("--------------");
+            }
+        }
+    }
+}
