@@ -1,0 +1,31 @@
+using System;
+using System.Collections.Generic;
+
+static bool checkBrackets(string input)
+{
+    Stack<char> stack = new Stack<char>();
+    stack.Push('!');
+    foreach(char symbol in input)
+    {
+        if (symbol == '{'||symbol == '['||symbol == '(')
+        {
+            stack.Push(symbol);
+        }
+        switch(symbol)
+        {
+            case '}':
+                if (stack.Pop() != '{') return false;
+                break;
+            case ']':
+                if (stack.Pop() != '[') return false;
+                break;
+            case ')':
+                if (stack.Pop() != '(') return false;
+                break;
+        }
+        
+    }
+    if (stack.Pop() == '!')return true;
+    else return false;
+}
+Console.WriteLine(checkBrackets("([{]})"));
