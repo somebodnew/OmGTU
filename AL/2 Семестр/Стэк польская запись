@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+
+
+static double EvaluateRPN(string input)
+{
+    string[] tokens = input.Split(' ');
+    Stack<double> stack = new Stack<double>();
+    Array.Reverse(tokens);
+    foreach (string token in tokens)
+    {
+        if (double.TryParse(token, out double number))
+        {
+            stack.Push(number);
+        }
+        else
+        {
+            double operand1 = stack.Pop();
+            double operand2 = stack.Pop();
+
+            switch (token)
+            {
+                case "+":
+                    stack.Push(operand1 + operand2);
+                    break;
+                case "-":
+                    stack.Push(operand1 - operand2);
+                    break;
+                case "*":
+                    stack.Push(operand1 * operand2);
+                    break;
+                case "/":
+                    if (operand2 != 0)
+                    {
+                        stack.Push(operand1 / operand2);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Деление на ноль");
+                    }
+                    break;
+                default:
+                    throw new InvalidOperationException("Неправильный оператор: " + token);
+            }
+        }
+    }
+
+    return stack.Pop();
+}
