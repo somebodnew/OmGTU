@@ -10,7 +10,8 @@ static double EvaluateRPN(string input)
     {
         if (double.TryParse(token, out double number))
         {
-            stack.Push(number);
+            if (stack.Count()<2)stack.Push(number);
+            else throw new InvalidOperationException("Больше двух операндов для одного оператора");
         }
         else
         {
