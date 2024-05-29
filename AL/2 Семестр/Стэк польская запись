@@ -6,7 +6,6 @@ static double EvaluateRPN(string input)
 {
     string[] tokens = input.Split(' ');
     Stack<double> stack = new Stack<double>();
-    Array.Reverse(tokens);
     foreach (string token in tokens)
     {
         if (double.TryParse(token, out double number))
@@ -15,8 +14,8 @@ static double EvaluateRPN(string input)
         }
         else
         {
-            double operand1 = stack.Pop();
             double operand2 = stack.Pop();
+            double operand1 = stack.Pop();
 
             switch (token)
             {
