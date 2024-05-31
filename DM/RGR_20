@@ -1,0 +1,179 @@
+import heapq
+def dijkstra(graph, start):
+    distances = {vertex: float('infinity') for vertex in graph}
+    distances[start] = 0
+    queue = []
+    heapq.heappush(queue, [distances[start], start])
+
+    while queue:
+        current_distance, current_vertex = heapq.heappop(queue)
+
+        if current_distance > distances[current_vertex]:
+            continue
+
+        for neighbor, weight in graph[current_vertex].items():
+            distance = current_distance + weight
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(queue, [distance, neighbor])
+    return distances
+
+def checkNM(A):
+    if len(A.split()) == 2:
+        N, M = map(int, A.split())
+        if not(2<=N and N<=5000 and 1<=M and M<=105):
+            return False
+        return True
+    return False
+
+def checkCentres(A,N):
+    if len(A.split()) != N:
+        return False
+    for i in A.split():
+        if i not in {'0','1','2'}:
+            return False   
+    return True
+
+def checkXYC(A):
+    if len(A.split()) != 3:
+        return False
+    for i in A.split():
+        if not i.isdigit():
+            return False
+        if not (int(i)>=1):
+            return False
+    return True             
+
+def inputMaker(infile):
+    f = open(infile,"w")
+    while True:
+        print("Введите одной строкой 'N M' ")
+        A = input()
+        if checkNM(A):
+            f.write(A+'\n')
+            break
+        print("Введите корректные данные")
+    N,M = map(int, A.split())
+
+    while True:
+        print("Введите через пробел N целых чисел 'Ai' ")
+        A = input()
+        if checkCentres(A,N):
+            f.write(A+'\n')
+            break
+        print("Введите корректные данные")
+        
+    print("Вводите построчно связи между городами в формате 'X Y C'",)
+    for _ in range(M):
+        while True:
+            A = input()
+            if checkXYC(A):
+                f.write(A+'\n')
+                break
+            print("Введите корректные данные")
+    f.close()
+    print("Запись данных завершена успешно")
+
+def validation(infile):
+    with open(infile) as f:
+        A = f.readline()
+        if checkNM(A):
+            N, M = map(int, A.split())
+            A = f.readline()
+            if checkCentres(A,N):
+                for _ in range(M):
+                    if not checkXYC(f.readline()):
+                        return False
+                return True
+    return False
+            
+
+def program(infile):
+    with open(infile) as f:
+        N, M = map(int, f.readline().split())
+
+        centers = list(map(int, f.readline().split()))
+        graph = {i: {} for i in range(1, N+1)}
+
+        for _ in range(M):
+            start, end, cost = map(int, f.readline().split())
+            graph[start][end] = cost
+            graph[end][start] = cost
+
+    lim_centers = [i for i, c in enumerate(centers) if c == 1]
+    lfm_centers = [i for i, c in enumerate(centers) if c == 2]
+
+    min_cost = float('infinity')
+    path = []
+    for lim_center in lim_centers:
+        distances = dijkstra(graph, lim_center + 1)
+        for lfm_center in lfm_centers:
+            if distances[lfm_center + 1] < min_cost:
+                min_cost = distances[lfm_center + 1]
+                path = [lim_center + 1, lfm_center + 1]
+    f = open(infile.replace(".txt","-output.txt"),'w')
+    if min_cost == float('infinity'):
+        f.write(str(-1))
+    else:
+        f.write(str(path[0])+' '+str(path[1])+' '+str(min_cost)) 
+    f.close()
+
+
+while True:
+    print("Меню выбора",
+            "1 - запуск программы",
+            "2 - запись исходных данных",
+            "3 - о программе" ,
+            "4 - выход" , sep = '\n',end="\n"+"\n")
+    a = int(input())
+
+    if a == 1:
+        print("Введите полное название файла, содержащего исходные данные")
+        infile = input()
+        if validation(infile):
+            program(infile)
+            print("Программа завершила работу, резульат записан в файл "+infile.replace(".txt","-output.txt"))
+        else:
+            print("Данный файл содержит некорректные данные или не подходит для работы программы")
+
+    elif a == 2:
+        print("Введите полное название файла, в который нужно записать исходные данные")
+        infile = input()
+        inputMaker(infile)
+        
+            
+    elif a == 3:
+        while True:
+            print("О программе",
+                    "1 - Текст задачи",
+                    "2 - Формат входных и выходных данных",
+                    "3 - Автор" ,
+                    "4 - Вернуться в меню выбора" , sep = '\n')
+            a = int(input())
+            if a == 1:
+                print("В свете недавних новостей о прослушивание каналов связи, два непримиримых интернет-гиганта Нарнии «LIM» и «LFM» решили подписать соглашение об установлении защищенного канала связи между дата-центрами друг друга. В Нарнии N городов, но, к сожалению, ни в одном городе нет дата-центров обоих гигантов. Поэтому для формирования защищенного канала придется прокладывать междугородние линии связи.",
+                      "Специалисты компаний определили M пар городов, которые можно соединить, проложив сегмент канала связи, и оценили стоимость создания такого сегмента для каждой из этих пар.",
+                      "Результирующий канал может состоять из нескольких сегментов. Он должен начинаться в одном из городов, где находится дата-центр первой компании, может проходить через промежуточные города и должен заканчиваться в городе, где находится дата-центр второй компании.",
+                      "Необходимо определить минимальную стоимость защищенного канала, соединяющего два дата-центра компаний.",sep='\n')
+
+            elif a == 2:
+                print("Формат входных данных",
+                      "N и M (2 ≤ N ≤ 5 000, 1 ≤ M ≤ 105)" ,
+                      "N целых чисел Ai (0 ≤ Ai ≤ 2) где Ai = {0, 1, 2}"
+                      "M строк, каждая содержащая по три целых числа: Si, Ti, Ci (1 ≤ Si, Ti ≤ N, Si ≠ Ti, 1 ≤ Ci ≤ 105)", 
+                      "Формат Выходных данных",
+                      "-1, если нет способа провести искомый канал"
+                      "X Y D (1 ≤ X, Y ≤ N, Si ≠ Ti), где в городе X должен находиться дата-центр «LIM», в городе Y – дата-центр «LFM», а D - стоимость постройки канала",
+                            sep = "\n")
+                
+            elif a == 3:
+                print("Программа написана Смаиловым Тимуром, студентом группы Фит-231")
+
+            elif a == 4:
+                break
+        
+
+    elif a == 4:
+        break
+
+    
