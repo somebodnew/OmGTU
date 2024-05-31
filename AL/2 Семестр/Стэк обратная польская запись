@@ -47,8 +47,8 @@ class Program {
                 }
             }
         }
-    
-        return stack.Pop();
+        if (stack.Count() == 1) return stack.Pop();
+        else throw new InvalidOperationException("Данное выражение некорректно");
     }
     static void Main() {
     Console.WriteLine(EvaluateRPN("3 6 / 7 +"));
