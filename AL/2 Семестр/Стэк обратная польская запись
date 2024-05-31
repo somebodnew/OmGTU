@@ -5,7 +5,7 @@ class Program {
     
     static double EvaluateRPN(string input)
     {
-        Array.Reverse(input);
+        
         string[] tokens = input.Split(' ');
         Stack<double> stack = new Stack<double>();
         
@@ -51,6 +51,6 @@ class Program {
         return stack.Pop();
     }
     static void Main() {
-    Console.WriteLine(EvaluateRPN("+ 7 / 6 3"));
+    Console.WriteLine(EvaluateRPN("3 6 / 7 +"));
   }
 }
