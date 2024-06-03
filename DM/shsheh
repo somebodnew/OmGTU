@@ -1,0 +1,32 @@
+def dfs(graph, node, visited, component):
+    visited[node] = True
+    component.append(node)
+    
+    for neighbor in graph[node]:
+        if not visited[neighbor]:
+            dfs(graph, neighbor, visited, component)
+
+def find_connected_components(graph):
+    num_nodes = len(graph)
+    visited = [False] * num_nodes
+    components = []
+
+    for node in range(num_nodes):
+        if not visited[node]:
+            component = []
+            dfs(graph, node, visited, component)
+            components.append(component)
+
+    return components
+
+# Пример графа
+graph = {
+    0: [1],
+    1: [0, 2],
+    2: [1],
+    3: [4],
+    4: [3]
+}
+
+connected_components = find_connected_components(graph)
+print(connected_components)
