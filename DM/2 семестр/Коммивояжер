@@ -1,0 +1,33 @@
+def alg(graph, start=1):
+    all_nodes = list(range(1, len(graph)+1))
+    all_nodes.remove(start)
+    min_path = float('inf')
+    min_path_order = None
+
+    def dps(node, visited, path, cost):
+        nonlocal min_path, min_path_order
+        if len(visited) == len(all_nodes) + 1:
+            if graph[node-1][start-1] != 0 and cost + graph[node-1][start-1] < min_path:
+                min_path = cost + graph[node-1][start-1]
+                min_path_order = [node] + path + [node]
+            return
+
+        for next_node in all_nodes:
+            if next_node not in visited and graph[node-1][next_node-1] != 0:
+                dps(next_node, visited.union({next_node}), path + [node], cost + graph[node-1][next_node-1])
+
+    dps(start, {start}, [], 0)
+
+    return min_path, min_path_order
+
+graph = [
+    [0, 10, 12, 13, 11],
+    [7, 0, 5, 4, 11],
+    [5, 6, 0, 4, 12],
+    [4, 6, 7, 0, 13],
+    [3, 5, 6, 7, 0]
+]
+
+min_path, min_path_order = alg(graph)
+print("Минимальный путь: ",min_path)
+print(f"Путь: ",min_path_order)
