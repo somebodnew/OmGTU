@@ -1,0 +1,34 @@
+def alg(graph, start_vertex, end_vertex):
+    visited = [False] * len(graph)
+    path = [-1] * len(graph)
+
+    def bfs(vertex):
+        visited[vertex] = True
+        if vertex == end_vertex:
+            return True
+        for neighbor in range(len(graph)):
+            if graph[vertex][neighbor] == 1 and not visited[neighbor]:
+                path[neighbor] = vertex
+                if bfs(neighbor):
+                    return True
+        return False
+
+    if bfs(start_vertex):
+        vertex = end_vertex
+        print("Искомый путь:")
+        while vertex != -1:
+            print(vertex, end=" ")
+            vertex = path[vertex]
+        print()
+    else:
+        print("Путь не найден")
+
+graph = [[0, 0, 1, 1, 0, 0, 0],
+         [0, 0, 1, 0, 1, 0, 1],
+         [1, 1, 0, 1, 1, 1, 1],
+         [1, 0, 1, 0, 1, 1, 1],
+         [0, 1, 1, 1, 0, 1, 0],
+         [0, 0, 1, 1, 1, 0, 1],
+         [0, 1, 1, 1, 0, 1, 0]]
+
+alg(graph, 0, 5)
