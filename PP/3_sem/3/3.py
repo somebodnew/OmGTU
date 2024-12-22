@@ -1,11 +1,8 @@
 import numpy as np
 from scipy.linalg import det, lu
 from scipy import stats
+from AMatrix import A
 
-A = np.array([[4, -3.4, 1, 1.8],
-              [-2, 8, 0, -9],
-              [2, -2.5, -7, 4],
-              [1, -1, 5, 1]])
 print(A)
 
 P, L, U = lu(A)
@@ -22,13 +19,13 @@ uniform_sample = np.random.randint(0, 100, size=100)
 print(uniform_sample)
 
 # Генерация выборки с нормальным распределением
-normal_sample = np.random.normal(loc=50, scale=15, size=100).astype(int)
+normal_sample = np.random.normal(loc=0, scale=10, size=100).astype(int)
 print(normal_sample)
 
 def calculate_statistics(sample):
     return {
         'mean': np.mean(sample),
-        'mode': np.argmax(np.bincount(sample.astype(int))),
+        'mode': stats.mode(sample),
         'median': np.median(sample),
         'min': np.min(sample),
         'max': np.max(sample),
@@ -36,11 +33,8 @@ def calculate_statistics(sample):
     }
 uniform_stats = calculate_statistics(uniform_sample)
 normal_stats = calculate_statistics(normal_sample)
-print(uniform_sample,normal_sample,sep='/n')
+print(uniform_sample,normal_sample,sep='\n')
 
-
-expected_frequencies = np.full(100, 1/100) 
-
-chi2_uniform, p_value_uniform = stats.chisquare(uniform_sample, expected_frequencies)
-chi2_normal, p_value_normal = stats.chisquare(normal_sample, expected_frequencies)
-print(p_value_uniform,p_value_normal,sep='/n')
+_, p_value_uniform = stats.chisquare(uniform_sample)
+_, p_value_normal = stats.chisquare(normal_sample)
+print(p_value_uniform,p_value_normal,sep='\n')
