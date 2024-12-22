@@ -86,7 +86,7 @@ print(missing_values[missing_values > 0])
 def fill_missing_values(dataframe):
     for column in dataframe.columns:
         if dataframe[column].isnull().sum() > 0:
-            if pd.api.types.is_integer_dtype(dataframe[column]):
+            if   pd.api.types.is_integer_dtype(dataframe[column]):
                 median_value = dataframe[column].median()
                 dataframe[column].fillna(median_value, inplace=True)
                 print(f"Заполнен пропуск в столбце '{column}' медианой: {median_value}")
@@ -104,3 +104,5 @@ fill_missing_values(dframe)
 missing_values_after = dframe.isnull().sum()
 print("Проверка после заполнения пропусков:")
 print(missing_values_after[missing_values_after > 0])
+
+dframe.to_csv('UpdatedRottenTomatoesMovies.csv')
