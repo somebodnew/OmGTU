@@ -25,8 +25,8 @@ a, b, eps = 0, math.pi, 0.001
 
 # Решение
 result = dh_method(a, b, eps)
-print(f"Минимум в точке: {result:.5f}")
-print(f"Значение функции в точке минимума: {f(result):.5f}")
+print(f"Минимум в точке: {result}")
+print(f"Значение функции в точке минимума: {f(result)}")
 
 def fibonacci(n):
     fib_sequence = [0, 1]
@@ -65,8 +65,8 @@ a, b, n = 0, math.pi, 100
 
 # Решение
 result = fib_method(a, b, n)
-print(f"Минимум в точке: {result:.5f}")
-print(f"Значение функции в точке минимума: {f(result):.5f}")
+print(f"Минимум в точке: {result}")
+print(f"Значение функции в точке минимума: {f(result)}")
 
 
 def gold_method(a, b, eps):
@@ -99,5 +99,5 @@ a, b, eps = 0, math.pi, 0.001
 
 # Решение
 result = gold_method(a, b, eps)
-print(f"Минимум в точке: {result:.5f}")
-print(f"Значение функции в точке минимума: {f(result):.5f}")
+print(f"Минимум в точке: {result}")
+print(f"Значение функции в точке минимума: {f(result)}")
