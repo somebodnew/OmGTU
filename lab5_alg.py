@@ -18,7 +18,39 @@ def naive_search(text, pattern):
     return -1
 
 # ---------------------------------------------------------
-# 2. Алгоритм Рабина-Карпа
+# 2. Алгоритм Бойера-Мура (эвристика плохого символа)
+# ---------------------------------------------------------
+def bad_char_heuristic(pattern, m):
+    bad_char = [-1] * 256 
+    for i in range(m):
+        bad_char[ord(pattern[i])] = i
+    return bad_char
+
+def boyer_moore_search(text, pattern):
+    n = len(text)
+    m = len(pattern)
+    
+    if m == 0 or n < m: return -1
+    
+    bad_char = bad_char_heuristic(pattern, m)
+    s = 0 
+    
+    while s <= n - m:
+        j = m - 1
+        
+        # Сравниваем с конца шаблона
+        while j >= 0 and pattern[j] == text[s + j]:
+            j -= 1
+            
+        if j < 0:
+            return s
+        else:
+            s += max(1, j - bad_char[ord(text[s + j])])
+            
+    return -1
+
+# ---------------------------------------------------------
+# 3. Алгоритм Рабина-Карпа
 # ---------------------------------------------------------
 def rabin_karp_search(text, pattern, d=256, q=101):
     n = len(text)
@@ -52,7 +84,7 @@ def rabin_karp_search(text, pattern, d=256, q=101):
     return -1
 
 # ---------------------------------------------------------
-# 3. Алгоритм Кнута-Морриса-Пратта (KMP)
+# 4. Алгоритм Кнута-Морриса-Пратта (KMP)
 # ---------------------------------------------------------
 def compute_lps(pattern, m):
     lps = [0] * m
@@ -95,46 +127,15 @@ def kmp_search(text, pattern):
                 i += 1
     return -1
 
-# ---------------------------------------------------------
-# 4. Алгоритм Бойера-Мура (эвристика плохого символа)
-# ---------------------------------------------------------
-def bad_char_heuristic(pattern, m):
-    bad_char = [-1] * 256 
-    for i in range(m):
-        bad_char[ord(pattern[i])] = i
-    return bad_char
-
-def boyer_moore_search(text, pattern):
-    n = len(text)
-    m = len(pattern)
-    
-    if m == 0 or n < m: return -1
-    
-    bad_char = bad_char_heuristic(pattern, m)
-    s = 0 
-    
-    while s <= n - m:
-        j = m - 1
-        
-        # Сравниваем с конца шаблона
-        while j >= 0 and pattern[j] == text[s + j]:
-            j -= 1
-            
-        if j < 0:
-            return s
-        else:
-            s += max(1, j - bad_char[ord(text[s + j])])
-            
-    return -1
 
 # =========================================================
-# СРАВНИТЕЛЬНЫЙ АНАЛИЗ (ЗАМЕР ВРЕМЕНИ)
+# СРАВНИТЕЛЬНЫЙ АНАЛИЗ 
 # =========================================================
 def run_benchmark():
     # Создаем тестовые данные
     # 1. Обычный текст (Случайный)
-    text_normal = "В этой лабораторной работе мы изучаем алгоритмы поиска подстроки. Это очень важная тема в информатике." * 500
-    pattern_normal = "важная тема"
+    text_normal = "Съешь ещё этих мягких французских булочек, да выпей же чаю" * 500
+    pattern_normal = "да выпей"
     
     # 2. Худший случай (много повторяющихся символов)
     text_worst = "A" * 100000 + "B"
@@ -162,8 +163,7 @@ def run_benchmark():
             result = algo_func(text, pattern)
             end_time = time.perf_counter()
             
-            exec_time = (end_time - start_time) * 1000 # в миллисекундах
+            exec_time = (end_time - start_time) * 1000
             print(f"{algo_name:<20}: {exec_time:8.4f} мс | Индекс: {result}")
 
-if __name__ == "__main__":
-    run_benchmark()
+run_benchmark()
