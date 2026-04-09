@@ -1,23 +1,8 @@
-"""
-Лабораторная работа 8 — Жадные алгоритмы
-Задача 1: Задача о рюкзаке (0/1 knapsack)
-  • Полный перебор  — O(2^n)
-  • Жадный алгоритм — O(n log n)
-"""
-
 import time
 import itertools
 
 
-# ─────────────────────────────────────────────
-# Полный перебор (brute-force)   O(2^n)
-# ─────────────────────────────────────────────
-
 def knapsack_brute(items: list[dict], W: int) -> tuple[list, int, int]:
-    """
-    Перебираем все 2^n подмножеств.
-    Возвращает (выбранные предметы, суммарный вес, суммарную стоимость).
-    """
     n = len(items)
     best_cost = 0
     best_subset = []
@@ -35,17 +20,7 @@ def knapsack_brute(items: list[dict], W: int) -> tuple[list, int, int]:
     return selected, total_w, best_cost
 
 
-# ─────────────────────────────────────────────
-# Жадный алгоритм                O(n log n)
-# ─────────────────────────────────────────────
-
 def knapsack_greedy(items: list[dict], W: int) -> tuple[list, int, int]:
-    """
-    Сортируем по убыванию удельной стоимости (cost/weight),
-    жадно берём предметы, пока они помещаются.
-    Примечание: жадный алгоритм не гарантирует оптимум для 0/1 рюкзака,
-    но на практике даёт хорошее приближение.
-    """
     sorted_items = sorted(items, key=lambda x: x['cost'] / x['weight'], reverse=True)
     selected = []
     total_w = 0
@@ -60,9 +35,7 @@ def knapsack_greedy(items: list[dict], W: int) -> tuple[list, int, int]:
     return selected, total_w, total_c
 
 
-# ─────────────────────────────────────────────
 # Демонстрация
-# ─────────────────────────────────────────────
 
 def print_result(label, selected, w, c, elapsed):
     print(f"\n  [{label}]")
@@ -93,12 +66,10 @@ def main():
     for it in items:
         print(f"{it['name']:<10} {it['weight']:<8} {it['cost']:<10} {it['cost']/it['weight']:.2f}")
 
-    # Полный перебор
     t0 = time.perf_counter()
     sel_b, w_b, c_b = knapsack_brute(items, W)
     elapsed_b = time.perf_counter() - t0
 
-    # Жадный
     t0 = time.perf_counter()
     sel_g, w_g, c_g = knapsack_greedy(items, W)
     elapsed_g = time.perf_counter() - t0
