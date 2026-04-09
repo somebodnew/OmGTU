@@ -1,40 +1,17 @@
-"""
-Лабораторная работа 7 — Жадные алгоритмы
-Задача 1: Планирование заказов (максимальная суммарная стоимость)
-Задача 2: Детский утренник (минимальное количество групп)
-"""
-
 import time
 
-
-# ─────────────────────────────────────────────
 # Задача 1: Планирование заказов
-# ─────────────────────────────────────────────
 
 def schedule_orders(orders: list[dict]) -> tuple[list, int]:
-    """
-    Жадный алгоритм: сортируем заказы по убыванию стоимости,
-    затем жадно ставим каждый заказ на максимально поздний
-    свободный слот до его дедлайна.
-
-    orders — список словарей {'name', 'deadline', 'cost'}
-    Возвращает (выбранные заказы, суммарную стоимость).
-
-    Сложность: O(n log n) — сортировка + O(n*m) назначение слотов
-    (m — максимальный дедлайн), на практике почти O(n log n).
-    """
-    # Сортировка по убыванию стоимости
     sorted_orders = sorted(orders, key=lambda o: o['cost'], reverse=True)
 
     max_deadline = max(o['deadline'] for o in orders)
-    # slots[i] = None означает, что день i свободен (дни 1..max_deadline)
     slots = [None] * (max_deadline + 1)
 
     selected = []
     total_cost = 0
 
     for order in sorted_orders:
-        # Ищем последний свободный слот <= deadline
         for day in range(order['deadline'], 0, -1):
             if slots[day] is None:
                 slots[day] = order['name']
@@ -42,24 +19,13 @@ def schedule_orders(orders: list[dict]) -> tuple[list, int]:
                 total_cost += order['cost']
                 break
 
-    # Расписание по дням
     schedule = {day: slots[day] for day in range(1, max_deadline + 1) if slots[day]}
     return selected, total_cost, schedule
 
 
-# ─────────────────────────────────────────────
 # Задача 2: Детский утренник — минимум групп
-# ─────────────────────────────────────────────
 
 def min_groups(children: list[dict]) -> list[list]:
-    """
-    Жадный алгоритм: сортируем детей по возрасту,
-    затем проходим и добавляем ребёнка в текущую группу,
-    если его возраст не больше чем на 2 года отличается
-    от возраста первого ребёнка группы; иначе — новая группа.
-
-    Сложность: O(n log n) — сортировка, O(n) — один проход.
-    """
     sorted_children = sorted(children, key=lambda c: c['age'])
     groups = []
     current_group = []
@@ -76,9 +42,7 @@ def min_groups(children: list[dict]) -> list[list]:
     return groups
 
 
-# ─────────────────────────────────────────────
-# Демонстрация
-# ─────────────────────────────────────────────
+
 
 
 print("=" * 55)
