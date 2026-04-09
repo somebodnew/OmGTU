@@ -1,20 +1,9 @@
-"""
-Лабораторная работа 10 — Код Хаффмана
-• Построение дерева Хаффмана
-• Словарь кодов (удовлетворяет условию Фано — префиксный код)
-• Кодирование текста
-• Декодирование (восстановление)
-• Оценка сложности
-"""
-
 import heapq
 import time
 from collections import Counter
 
 
-# ─────────────────────────────────────────────
 # Узел дерева Хаффмана
-# ─────────────────────────────────────────────
 
 class Node:
     __slots__ = ('char', 'freq', 'left', 'right')
@@ -25,14 +14,11 @@ class Node:
         self.left  = left
         self.right = right
 
-    # heapq сравнивает узлы; сортируем только по частоте
     def __lt__(self, other):
         return self.freq < other.freq
 
 
-# ─────────────────────────────────────────────
 # Построение дерева   O(n log n)
-# ─────────────────────────────────────────────
 
 def build_huffman_tree(text: str) -> Node:
     freq = Counter(text)
@@ -47,9 +33,7 @@ def build_huffman_tree(text: str) -> Node:
     return heap[0]
 
 
-# ─────────────────────────────────────────────
 # Генерация кодов (обход дерева)  O(n)
-# ─────────────────────────────────────────────
 
 def build_codes(node: Node, prefix: str = '', codes: dict = None) -> dict:
     if codes is None:
@@ -64,17 +48,13 @@ def build_codes(node: Node, prefix: str = '', codes: dict = None) -> dict:
     return codes
 
 
-# ─────────────────────────────────────────────
 # Кодирование   O(m)  (m — длина текста)
-# ─────────────────────────────────────────────
 
 def encode(text: str, codes: dict) -> str:
     return ''.join(codes[ch] for ch in text)
 
 
-# ─────────────────────────────────────────────
 # Декодирование  O(m)
-# ─────────────────────────────────────────────
 
 def decode(encoded: str, root: Node) -> str:
     result = []
@@ -87,9 +67,7 @@ def decode(encoded: str, root: Node) -> str:
     return ''.join(result)
 
 
-# ─────────────────────────────────────────────
 # Вспомогательная печать дерева
-# ─────────────────────────────────────────────
 
 def print_tree(node: Node, indent: str = '', last: bool = True):
     connector = '└── ' if last else '├── '
@@ -101,9 +79,7 @@ def print_tree(node: Node, indent: str = '', last: bool = True):
         print_tree(child, indent + ext, i == len(children) - 1)
 
 
-# ─────────────────────────────────────────────
 # Демонстрация
-# ─────────────────────────────────────────────
 
 def main():
     text = input("Введите текст для кодирования: ").strip()
